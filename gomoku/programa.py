@@ -34,7 +34,7 @@ class State(object):
     """
     This class represents a state in the gomoku game
     """
-    __slots__ = ["board", "player", "message"]
+    __slots__ = ["board", "player", "message", "parent"]
 
     @classmethod
     def get_initial_state(cls, initial_player):
@@ -47,6 +47,12 @@ class State(object):
         self.board = board
         self.player = player
         self.message = None
+        self.parent = None
+
+    def _clone(self):
+        state = copy.copy(self)
+        state.parent = self
+        return state
 
     def get_next_player(self):
         if self.player == "X":
@@ -61,7 +67,7 @@ class State(object):
         return player in ("X", "O") and self.board[y][x] == player
 
     def display(self, message):
-        state = copy.copy(self)
+        state = self._clone()
         state.message = message
         return state
 
@@ -70,7 +76,7 @@ class State(object):
             raise AlreadyMarked(y, x)
         if y >= BOARD_HEIGHT or y < 0 or x >= BOARD_WIDTH or x <= 0:
             raise InvalidLocation(y, x)
-        state = copy.copy(self)
+        state = self._clone()
         state.board[y][x] = self.player
         state.player = self.get_next_player()
         return state
@@ -78,6 +84,8 @@ class State(object):
     def get_next_states(self):
         for y in range(15):
             for x in range(15):
+                if self.is_marked(y, x):
+                    continue
                 yield self.mark(y, x)
 
 
