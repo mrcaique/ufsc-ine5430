@@ -46,7 +46,7 @@ class State(BaseState):
     @classmethod
     def get_initial_state(cls, initial_player):
         return cls(
-            board=[["+" for _ in range(BOARD_WIDTH)] for _ in range(BOARD_HEIGHT)],
+            board=tuple(tuple("+" for _ in range(BOARD_WIDTH)) for _ in range(BOARD_HEIGHT)),
             player=initial_player,
             message=None,
             parent=None
@@ -70,10 +70,14 @@ class State(BaseState):
     def mark(self, y, x):
         if self.is_marked(y, x):
             raise AlreadyMarked(y, x)
-        if y >= BOARD_HEIGHT or y < 0 or x >= BOARD_WIDTH or x <= 0:
+        if y >= BOARD_HEIGHT or y < 0 or x >= BOARD_WIDTH or x < 0:
             raise InvalidLocation(y, x)
         board = copy.copy(self.board)
+        board = list(board)
+        board[y] = list(board[y])
         board[y][x] = self.player
+        board[y] = tuple(board[y])
+        board = tuple(board)
         player = self.get_next_player()
         return State(board, player, self.message, self)
 
