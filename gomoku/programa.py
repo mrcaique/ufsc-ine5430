@@ -12,6 +12,9 @@ class AlreadyMarked(Exception):
     def __init__(self, y, x):
         super(AlreadyMarked, self).__init__("Position y={} and x={} is already marked".format(y, x))
 
+class StopPropagation(Exception):
+    pass
+
 class Mouse(object):
     __slots__ = ["x", "y", "button"]
     LEFT_CLICKED = curses.BUTTON1_CLICKED
@@ -142,6 +145,18 @@ class Display(object):
     def get_height(self):
         return (BOARD_HEIGHT*2)-1
 
+    def display(self, message):
+        width  = self.get_width()
+        height = self.get_height()
+        lines = [s.center(width-2) for s in textwrap.wrap(message, width-2)]
+        for i in range(len(lines)):
+            lines[i] = "|".join(["", lines[i], ""])
+        lines.insert(0, "="*width)
+        lines.append("="*width)
+        lines_count = len(lines)
+        for i, line in enumerate(lines):
+            self.window.addstr((height//2)-((lines_count//1))+i, width, line)
+
     def draw(self, state):
         width  = self.get_width()
         height = self.get_height()
@@ -150,14 +165,7 @@ class Display(object):
             for y in range(height):
                 self.window.addch(y, x, ord(self.get_char(y, x, state)))
         if state.message:
-            msg = [s.center(width-2) for s in textwrap.wrap(state.message, width-2)]
-            for i in range(len(msg)):
-                msg[i] = "|".join(["", msg[i], ""])
-                print(msg[i])
-            msg.insert(0, "="*width)
-            msg.append("="*width)
-            msg = "\n".join(msg)
-            self.window.addstr((height//2)-(msg.count("\n")//2), 0, msg)
+            self.display(state.message)
         self.window.refresh()
 
     def on(self, event, fn):
