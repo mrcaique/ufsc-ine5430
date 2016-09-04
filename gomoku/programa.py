@@ -142,11 +142,14 @@ class Display(object):
             for y in range(height):
                 self.window.addch(y, x, self.get_char(y, x, state))
         if state.message:
-            msg = [s.center(width) for s in textwrap.wrap(state.message, width)]
+            msg = [s.center(width-2) for s in textwrap.wrap(state.message, width-2)]
+            for i in range(len(msg)):
+                msg[i] = "|".join(["", msg[i], ""])
+                print(msg[i])
             msg.insert(0, "="*width)
             msg.append("="*width)
             msg = "\n".join(msg)
-            self.window.addstr(height//2, 0, msg)
+            self.window.addstr((height//2)-(msg.count("\n")//2), 0, msg)
         self.window.refresh()
 
     def on(self, event, fn):
