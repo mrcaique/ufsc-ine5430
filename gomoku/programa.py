@@ -116,7 +116,7 @@ class Display(object):
         elif xm == 1 and ym == 1:
             return " "
         elif xm == 1 and ym == 0:
-            return "─"
+            return "-"
         elif xm == 0 and ym == 1:
             return "|"
 
@@ -140,7 +140,7 @@ class Display(object):
         self.window.clear()
         for x in range(width):
             for y in range(height):
-                self.window.addch(y, x, self.get_char(y, x, state))
+                self.window.addch(y, x, ord(self.get_char(y, x, state)))
         if state.message:
             msg = [s.center(width-2) for s in textwrap.wrap(state.message, width-2)]
             for i in range(len(msg)):
