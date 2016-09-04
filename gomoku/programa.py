@@ -1,5 +1,7 @@
 # encoding: utf-8
-import curses, time, copy, textwrap
+import curses, time, copy, textwrap, collections
+
+__all__ = ["Display", "State"]
 
 BOARD_WIDTH = 15
 BOARD_HEIGHT = 15
@@ -12,8 +14,6 @@ class AlreadyMarked(Exception):
     def __init__(self, y, x):
         super(AlreadyMarked, self).__init__("Position y={} and x={} is already marked".format(y, x))
 
-class StopPropagation(Exception):
-    pass
 
 class Mouse(object):
     __slots__ = ["x", "y", "button"]
@@ -33,29 +33,24 @@ class Mouse(object):
 class Key(str):
     pass
 
-class State(object):
+BaseState = collections.namedtuple(
+    "State",
+    ["board", "player", "message", "parent"]
+)
+
+class State(BaseState):
     """
     This class represents a state in the gomoku game
     """
-    __slots__ = ["board", "player", "message", "parent"]
 
     @classmethod
     def get_initial_state(cls, initial_player):
         return cls(
             board=[["+" for _ in range(BOARD_WIDTH)] for _ in range(BOARD_HEIGHT)],
-            player=initial_player
+            player=initial_player,
+            message=None,
+            parent=None
         )
-
-    def __init__(self, board, player):
-        self.board = board
-        self.player = player
-        self.message = None
-        self.parent = None
-
-    def _clone(self):
-        state = copy.copy(self)
-        state.parent = self
-        return state
 
     def get_next_player(self):
         if self.player == "X":
@@ -70,19 +65,17 @@ class State(object):
         return player in ("X", "O") and self.board[y][x] == player
 
     def display(self, message):
-        state = self._clone()
-        state.message = message
-        return state
+        return State(self.board, self.player, message, self)
 
     def mark(self, y, x):
         if self.is_marked(y, x):
             raise AlreadyMarked(y, x)
         if y >= BOARD_HEIGHT or y < 0 or x >= BOARD_WIDTH or x <= 0:
             raise InvalidLocation(y, x)
-        state = self._clone()
-        state.board[y][x] = self.player
-        state.player = self.get_next_player()
-        return state
+        board = copy.copy(self.board)
+        board[y][x] = self.player
+        player = self.get_next_player()
+        return State(board, player, self.message, self)
 
     def get_next_states(self):
         for y in range(15):
@@ -205,7 +198,8 @@ class Display(object):
                 except Exception as e:
                     state = state.display(str(e))
                 self.draw(state)
-                state.message = None
+                if state.message:
+                    state = state.display(None)
         finally:
             self.close()
         return state
