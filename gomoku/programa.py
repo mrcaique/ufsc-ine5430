@@ -211,7 +211,8 @@ def process_mouse_click(display, state, ev):
     y, x = display.locate(ev.y, ev.x)
     return state.mark(y, x)
 
-state = State.get_initial_state("O")
-display = Display()
-display.on(display.MOUSE_EVENT, process_mouse_click)
-display.loop(state)
+if __name__ == "__main__":
+    state = State.get_initial_state("O")
+    display = Display()
+    display.on(display.MOUSE_EVENT, process_mouse_click)
+    display.loop(state)
