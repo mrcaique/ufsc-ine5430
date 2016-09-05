@@ -90,34 +90,30 @@ class State(BaseState):
         return State(board, player, self.message, self)
 
     def won(self):
+        mappers = [
+            lambda y, x, n: [y, x-n],
+            lambda y, x, n: [y, x+n],
+            lambda y, x, n: [y-n, x],
+            lambda y, x, n: [y+n, x],
+            lambda y, x, n: [y-n, x-n],
+            lambda y, x, n: [y+n, x+n],
+            lambda y, x, n: [y-n, x+n],
+            lambda y, x, n: [y+n, x-n]
+        ]
         for y in range(BOARD_HEIGHT):
             for x in range(BOARD_WIDTH):
                 if not self.is_marked(y, x):
                     continue
                 player = self.board[y][x]
-                # Horizontal <--
-                won = all(self.is_marked_by(y, x-n, player) for n in range(5))
-                if not won:
-                    # Horizontal -->
-                    won = all(self.is_marked_by(y, x+n, player) for n in range(5))
-                if not won:
-                    # Vertical /\
-                    won = all(self.is_marked_by(y-n, x, player) for n in range(5))
-                if not won:
-                    # Vertical \/
-                    won = all(self.is_marked_by(y+n, x, player) for n in range(5))
-                if not won:
-                    # Diagonal \
-                    won = all(self.is_marked_by(y+n, x+n, player) for n in range(5))
-                if not won:
-                    # Diagonal \
-                    won = all(self.is_marked_by(y-n, x-n, player) for n in range(5))
-                if not won:
-                    # Diagonal /
-                    won = all(self.is_marked_by(y+n, x-n, player) for n in range(5))
-                if not won:
-                    # Diagonal /
-                    won = all(self.is_marked_by(y-n, x+n, player) for n in range(5))
+                for i, mapper in enumerate(mappers):
+                    won = True
+                    for n in range(1, 5):
+                        y2, x2 = mapper(y, x, n)
+                        if not self.is_marked_by(y2, x2, player):
+                            won = False
+                            break
+                    if won:
+                        break
                 if won:
                     return player
         return None
