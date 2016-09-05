@@ -6,14 +6,19 @@ __all__ = ["Display", "State"]
 BOARD_WIDTH = 15
 BOARD_HEIGHT = 15
 
-class InvalidLocation(Exception):
+class GameWarning(Exception):
+    pass
+
+class InvalidLocation(GameWarning):
     def __init__(self, y, x):
         super(InvalidLocation, self).__init__("Position y={} and x={} is not a valid position".format(y, x))
 
-class AlreadyMarked(Exception):
+class AlreadyMarked(GameWarning):
     def __init__(self, y, x):
         super(AlreadyMarked, self).__init__("Position y={} and x={} is already marked".format(y, x))
 
+class Quit(Exception):
+    pass
 
 class Mouse(object):
     __slots__ = ["x", "y", "button"]
@@ -58,11 +63,14 @@ class State(BaseState):
         else:
             return "X"
 
+    def is_valid_position(self, y, x):
+        return y >= 0 and x >= 0 and y < BOARD_HEIGHT and x < BOARD_WIDTH
+
     def is_marked(self, y, x):
-        return self.board[y][x] in ("X", "O")
+        return self.is_valid_position(y, x) and self.board[y][x] in ("X", "O")
 
     def is_marked_by(self, y, x, player):
-        return player in ("X", "O") and self.board[y][x] == player
+        return self.is_valid_position(y, x) and player in ("X", "O") and self.board[y][x] == player
 
     def display(self, message):
         return State(self.board, self.player, message, self)
@@ -81,28 +89,70 @@ class State(BaseState):
         player = self.get_next_player()
         return State(board, player, self.message, self)
 
+    def won(self):
+        for y in range(BOARD_HEIGHT):
+            for x in range(BOARD_WIDTH):
+                if not self.is_marked(y, x):
+                    continue
+                player = self.board[y][x]
+                # Horizontal <--
+                won = all(self.is_marked_by(y, x-n, player) for n in range(5))
+                if not won:
+                    # Horizontal -->
+                    won = all(self.is_marked_by(y, x+n, player) for n in range(5))
+                if not won:
+                    # Vertical /\
+                    won = all(self.is_marked_by(y-n, x, player) for n in range(5))
+                if not won:
+                    # Vertical \/
+                    won = all(self.is_marked_by(y+n, x, player) for n in range(5))
+                if not won:
+                    # Diagonal \
+                    won = all(self.is_marked_by(y+n, x+n, player) for n in range(5))
+                if not won:
+                    # Diagonal \
+                    won = all(self.is_marked_by(y-n, x-n, player) for n in range(5))
+                if not won:
+                    # Diagonal /
+                    won = all(self.is_marked_by(y+n, x-n, player) for n in range(5))
+                if not won:
+                    # Diagonal /
+                    won = all(self.is_marked_by(y-n, x+n, player) for n in range(5))
+                if won:
+                    return player
+        return None
+
     def get_next_states(self):
-        for y in range(15):
-            for x in range(15):
+        for y in range(BOARD_HEIGHT):
+            for x in range(BOARD_WIDTH):
                 if self.is_marked(y, x):
                     continue
                 yield self.mark(y, x)
 
 
 class Display(object):
-    __slots__ = ["window", "handlers"]
+    __slots__ = ["window", "handlers", "has_colors"]
 
     MOUSE_EVENT = object()
     KEY_EVENT = object()
+    PREDRAW_EVENT = object()
+    POSDRAW_EVENT = object()
 
     def __init__(self):
         self.window = curses.initscr()
+        curses.start_color()
         self.handlers = {}
         curses.noecho()
         curses.cbreak()
         curses.mousemask(1)
         self.window.keypad(1)
         curses.curs_set(0)
+        self.has_colors = curses.can_change_color()
+        if self.has_colors:
+            curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_YELLOW)
+            curses.init_pair(2, curses.COLOR_RED, curses.COLOR_YELLOW)
+            curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_YELLOW)
+
 
     def close(self):
         curses.nocbreak()
@@ -160,7 +210,24 @@ class Display(object):
         self.window.clear()
         for x in range(width):
             for y in range(height):
-                self.window.addch(y, x, ord(self.get_char(y, x, state)))
+                char = self.get_char(y, x, state)
+                attr = None
+                if self.has_colors:
+                    color_pair = 1
+                    if char == "O":
+                        color_pair = 2
+                    elif char == "X":
+                        color_pair = 3
+                        char = "O"
+                    attr = curses.color_pair(color_pair)
+                if char in ("O", "X"):
+                    if attr is None:
+                        attr = 0
+                    attr = attr | curses.A_BOLD
+                if attr is not None:
+                    self.window.addch(y, x, ord(char), attr)
+                else:
+                    self.window.addch(y, x, ord(char))
         if state.message:
             self.display(state.message)
         self.window.refresh()
@@ -171,7 +238,7 @@ class Display(object):
     def once(self, event, fn):
         def cb(*args, **kwargs):
             self.off(event, cb)
-            fn(*args,**kwargs)
+            return fn(*args,**kwargs)
         self.on(event, cb)
 
     def off(self, event, fn=None):
@@ -199,11 +266,15 @@ class Display(object):
                     ev = self.MOUSE_EVENT
                 try:
                     state = self.trigger(ev, state, *args)
-                except Exception as e:
+                except GameWarning as e:
                     state = state.display(str(e))
+                state = self.trigger(self.PREDRAW_EVENT, state)
                 self.draw(state)
+                state = self.trigger(self.POSDRAW_EVENT, state)
                 if state.message:
                     state = state.display(None)
+        except (KeyboardInterrupt, Quit):
+            pass
         finally:
             self.close()
         return state
@@ -215,8 +286,20 @@ def process_mouse_click(display, state, ev):
     y, x = display.locate(ev.y, ev.x)
     return state.mark(y, x)
 
+def finish(display, state, *args, **kwargs):
+    raise Quit()
+    return state
+
+def check_won(display, state):
+    won = state.won()
+    if won:
+        state = state.display("The player {} won".format(won))
+        display.off(display.MOUSE_EVENT)
+        display.once(display.MOUSE_EVENT, finish)
+    return state
 if __name__ == "__main__":
     state = State.get_initial_state("O")
     display = Display()
     display.on(display.MOUSE_EVENT, process_mouse_click)
+    display.on(display.PREDRAW_EVENT, check_won)
     display.loop(state)
