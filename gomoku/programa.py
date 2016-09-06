@@ -89,7 +89,9 @@ class State(BaseState):
         player = self.get_next_player()
         return State(board, player, self.message, self)
 
-    def won(self):
+    def won(self, py, px):
+        if not self.is_marked(py, px):
+            return
         mappers = [
             lambda y, x, n: [y, x-n],
             lambda y, x, n: [y, x+n],
@@ -100,22 +102,16 @@ class State(BaseState):
             lambda y, x, n: [y-n, x+n],
             lambda y, x, n: [y+n, x-n]
         ]
-        for y in range(BOARD_HEIGHT):
-            for x in range(BOARD_WIDTH):
-                if not self.is_marked(y, x):
-                    continue
-                player = self.board[y][x]
-                for i, mapper in enumerate(mappers):
-                    won = True
-                    for n in range(1, 5):
-                        y2, x2 = mapper(y, x, n)
-                        if not self.is_marked_by(y2, x2, player):
-                            won = False
-                            break
-                    if won:
-                        break
-                if won:
-                    return player
+        player = self.board[py][px]
+        for i, mapper in enumerate(mappers):
+            won = True
+            for n in range(1, 5):
+                y2, x2 = mapper(py, px, n)
+                if not self.is_marked_by(y2, x2, player):
+                    won = False
+                    break
+            if won:
+                return player
         return None
 
     def get_next_states(self):
@@ -133,6 +129,7 @@ class Display(object):
     KEY_EVENT = object()
     PREDRAW_EVENT = object()
     POSDRAW_EVENT = object()
+    MARK_EVENT = object()
 
     def __init__(self):
         self.window = curses.initscr()
@@ -280,14 +277,15 @@ def process_mouse_click(display, state, ev):
     if not ev.match(Mouse.LEFT_CLICKED):
         return state
     y, x = display.locate(ev.y, ev.x)
-    return state.mark(y, x)
+    state = state.mark(y, x)
+    return display.trigger(display.MARK_EVENT, state, y=y, x=x)
 
 def finish(display, state, *args, **kwargs):
     raise Quit()
     return state
 
-def check_won(display, state):
-    won = state.won()
+def check_won(display, state, y, x):
+    won = state.won(y, x)
     if won:
         state = state.display("The player {} won".format(won))
         display.off(display.MOUSE_EVENT)
@@ -297,5 +295,5 @@ if __name__ == "__main__":
     state = State.get_initial_state("O")
     display = Display()
     display.on(display.MOUSE_EVENT, process_mouse_click)
-    display.on(display.PREDRAW_EVENT, check_won)
+    display.on(display.MARK_EVENT, check_won)
     display.loop(state)
