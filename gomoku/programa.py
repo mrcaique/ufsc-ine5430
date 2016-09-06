@@ -184,9 +184,11 @@ class Display(object):
     MARK_EVENT = object()
 
     def __init__(self):
+        self.handlers = {}
+    
+    def initialize(self):
         self.window = curses.initscr()
         curses.start_color()
-        self.handlers = {}
         curses.noecho()
         curses.cbreak()
         curses.mousemask(1)
@@ -198,10 +200,10 @@ class Display(object):
             curses.init_pair(2, curses.COLOR_RED, curses.COLOR_YELLOW)
             curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_YELLOW)
 
-
     def close(self):
         curses.nocbreak()
-        self.window.keypad(0)
+        if self.window:
+            self.window.keypad(0)
         curses.echo()
         curses.endwin()
 
@@ -298,8 +300,9 @@ class Display(object):
         return state
 
     def loop(self, state):
-        self.draw(state)
         try:
+            self.initialize()
+            self.draw(state)
             while True:
                 ev = self.window.getch()
                 args = []
