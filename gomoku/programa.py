@@ -106,12 +106,12 @@ class State(BaseState):
         partindo deste ponto
         """
         if not self.is_marked(py, px):
-            return
+            return 0
         if player is None:
             player = self.board[py][px]
-        mseq = 0
+        mseq = 1
         for i, direction in enumerate(DIRECTIONS):
-            seq = 0
+            seq = 1
             for n in range(1, 5):
                 y2, x2 = direction(py, px, n)
                 if not self.is_marked_by(y2, x2, player):
@@ -160,6 +160,10 @@ class State(BaseState):
                 seq = self.max_sequence(y, x, player)
                 if seq > mseq:
                     mseq = seq
+                if seq == 5:
+                    break
+            if mseq == 5:
+                break
         return mseq
 
     def get_next_states(self):
