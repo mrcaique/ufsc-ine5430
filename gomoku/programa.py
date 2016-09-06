@@ -6,6 +6,17 @@ __all__ = ["Display", "State"]
 BOARD_WIDTH = 15
 BOARD_HEIGHT = 15
 
+DIRECTIONS = (
+    lambda y, x, n: [y, x-n], # Esquerda
+    lambda y, x, n: [y, x+n], # Direita
+    lambda y, x, n: [y-n, x], # Superior
+    lambda y, x, n: [y+n, x], # Inferior
+    lambda y, x, n: [y-n, x-n], # Diagonal Superior Esquerda
+    lambda y, x, n: [y+n, x+n], # Diagonal Inferior Direita
+    lambda y, x, n: [y-n, x+n], # Diagonal Superior Direita
+    lambda y, x, n: [y+n, x-n] # Diagonal Inferior Esquerda
+)
+
 class GameWarning(Exception):
     pass
 
@@ -49,10 +60,10 @@ class State(BaseState):
     """
 
     @classmethod
-    def get_initial_state(cls, initial_player):
+    def get_initial_state(cls):
         return cls(
             board=tuple(tuple("+" for _ in range(BOARD_WIDTH)) for _ in range(BOARD_HEIGHT)),
-            player=initial_player,
+            player="O",
             message=None,
             parent=None
         )
@@ -89,30 +100,67 @@ class State(BaseState):
         player = self.get_next_player()
         return State(board, player, self.message, self)
 
-    def won(self, py, px):
+    def max_sequence(self, py, px, player=None):
+        """
+        Dado um ponto, checa a maior sequencia possivel que eh possivel alcancar
+        partindo deste ponto
+        """
         if not self.is_marked(py, px):
             return
-        mappers = [
-            lambda y, x, n: [y, x-n],
-            lambda y, x, n: [y, x+n],
-            lambda y, x, n: [y-n, x],
-            lambda y, x, n: [y+n, x],
-            lambda y, x, n: [y-n, x-n],
-            lambda y, x, n: [y+n, x+n],
-            lambda y, x, n: [y-n, x+n],
-            lambda y, x, n: [y+n, x-n]
-        ]
-        player = self.board[py][px]
-        for i, mapper in enumerate(mappers):
+        if player is None:
+            player = self.board[py][px]
+        mseq = 0
+        for i, direction in enumerate(DIRECTIONS):
+            seq = 0
+            for n in range(1, 5):
+                y2, x2 = direction(py, px, n)
+                if not self.is_marked_by(y2, x2, player):
+                    break
+                seq += 1
+            if seq > mseq:
+                mseq = seq
+        return mseq
+
+    def won(self, py, px, player=None):
+        """
+        Checa se ha uma sequencia valida a partir de um ponto inicial no tabuleiro
+        """
+        if not self.is_marked(py, px):
+            return
+        if player is None:
+            player = self.board[py][px]
+        for i, direction in enumerate(DIRECTIONS):
             won = True
             for n in range(1, 5):
-                y2, x2 = mapper(py, px, n)
+                y2, x2 = direction(py, px, n)
                 if not self.is_marked_by(y2, x2, player):
                     won = False
                     break
             if won:
                 return player
         return None
+
+    def check_won(self, player=None):
+        """
+        Checa se ha uma sequencia valida partindo de cada ponto do tabuleiro
+        """
+        for y in range(BOARD_HEIGHT):
+            for x in range(BOARD_WIDTH):
+                result = self.won(y, x, player)
+                if result:
+                    return result
+
+    def check_max_sequence(self, player=None):
+        """
+        Checa a maior sequencia encontrada partindo de cada ponto do tabuleiro
+        """
+        mseq = 0
+        for y in range(BOARD_HEIGHT):
+            for x in range(BOARD_WIDTH):
+                seq = self.max_sequence(y, x, player)
+                if seq > mseq:
+                    mseq = seq
+        return mseq
 
     def get_next_states(self):
         for y in range(BOARD_HEIGHT):
@@ -292,7 +340,7 @@ def check_won(display, state, y, x):
         display.once(display.MOUSE_EVENT, finish)
     return state
 if __name__ == "__main__":
-    state = State.get_initial_state("O")
+    state = State.get_initial_state()
     display = Display()
     display.on(display.MOUSE_EVENT, process_mouse_click)
     display.on(display.MARK_EVENT, check_won)
