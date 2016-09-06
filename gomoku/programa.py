@@ -105,10 +105,10 @@ class State(BaseState):
         Dado um ponto, checa a maior sequencia possivel que eh possivel alcancar
         partindo deste ponto
         """
-        if not self.is_marked(py, px):
-            return 0
         if player is None:
             player = self.board[py][px]
+        if not self.is_marked_by(py, px):
+            return 0
         mseq = 1
         for i, direction in enumerate(DIRECTIONS):
             seq = 1
@@ -125,10 +125,10 @@ class State(BaseState):
         """
         Checa se ha uma sequencia valida a partir de um ponto inicial no tabuleiro
         """
-        if not self.is_marked(py, px):
-            return
         if player is None:
             player = self.board[py][px]
+        if not self.is_marked_by(py, px, player):
+            return None
         for i, direction in enumerate(DIRECTIONS):
             won = True
             for n in range(1, 5):
