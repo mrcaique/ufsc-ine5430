@@ -1,4 +1,3 @@
-
 # encoding: utf-8
 import curses, time, copy, textwrap, collections, random, math
 
@@ -423,19 +422,21 @@ def run_ia(display, state, *args, **kwargs):
     i = state.get_next_states()
     a = []
     if state.parent.last_move is not None:
-        # a.append(lambda s: max(ss.max_sequence(ss.last_move.y, ss.last_move.x, state.get_next_player()) for ss in s.get_next_states()))
+        a.append(lambda s: max(ss.max_sequence(ss.last_move.y, ss.last_move.x, state.get_next_player()) for ss in s.get_next_states()))
         # a.append(lambda s: 3-max(sss.max_sequence(s.last_move.y, s.last_move.x, display.computer_player) for ss in s.get_next_states() for sss in ss.get_next_states()))
         a.append(lambda s: math.sqrt(((state.parent.last_move.y-s.last_move.y)**2)+((state.parent.last_move.x-s.last_move.x)**2)))
-    a.append(lambda s: random.randint(0, 1) == 1) # Just a random factor
+    a.append(lambda s: random.randint(0, 10000)) # Just a random factor
     s = min(i, key=lambda s: [c(s) for c in a])
     # Show what's the algorithm choice
     s = s.display(str([c(s) for c in a]))
+    time.sleep(1)
 
     # s[0] = s[0].display(str(s[0].max_sequence(state.parent.last_move.y, state.parent.last_move.x, display.computer_player)))
     return display.trigger(display.MARK_EVENT, s, s.last_move.y, s.last_move.x)
 
 def should_ia_run(display, state, y, x):
     if state.player == display.computer_player:
+        display.draw(state)
         return display.trigger(display.IA_MOVE, state)
     return state
 
