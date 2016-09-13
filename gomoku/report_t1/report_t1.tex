@@ -179,12 +179,13 @@
     há um campo vazio) então o algoritmo pula para a próxima direção possível.
     
     Note que, devido a este comportamento, o número de iterações realizado é
-    relativamente baixo: no melhor caso, que é quando a peça inserida não tem
-    absolutamente nenhuma peça vazia, o algoritmo executa apenas 8 iterações,
-    enquanto que no pior caso, que é quando o algoritmo tem 3 peças em cada
-    direção possível, ele executa 32 iterações. E isso apenas quando uma peça é
-    efetivamente marcada no tabuleiro, tornando todo o processamento bastante
-    eficiente.
+    relativamente baixo: no melhor caso, que é quando a peça inserida somente
+    tem espaço vazio em qualquer uma das oito direções - ou seja, é inserida em
+    um lugar onde não há peças vizinhas de mesma cor, o algoritmo executa
+    apenas 8 iterações,enquanto que no pior caso, que é quando o algoritmo tem
+    3 peças em cada direção possível, ele executa 32 iterações. E isso apenas
+    quando uma peça é efetivamente marcada no tabuleiro, tornando todo o
+    processamento bastante eficiente.
     
     Além dessa checagem a cada jogada feita, também é disponibilizado um método
     que checa cada posição no tabuleiro e retorna o primeiro que forma uma
