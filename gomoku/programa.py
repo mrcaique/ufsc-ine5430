@@ -1,5 +1,6 @@
+
 # encoding: utf-8
-import curses, time, copy, textwrap, collections
+import curses, time, copy, textwrap, collections, random, math
 
 __all__ = ["Display", "State"]
 
@@ -18,17 +19,40 @@ DIRECTIONS = (
 )
 
 class GameWarning(Exception):
+    """
+    Essa exceção é emitida quando um aviso a respeito do jogo deve ser emitida
+    """
     pass
 
 class InvalidLocation(GameWarning):
+    """
+    Essa exceção é emitida quando uma posição é inválida
+    """
     def __init__(self, y, x):
         super(InvalidLocation, self).__init__("Position y={} and x={} is not a valid position".format(y, x))
 
 class AlreadyMarked(GameWarning):
+    """
+    Essa excecao é emitida quando uma posição no tabuleiro já está marcada
+    """
     def __init__(self, y, x):
         super(AlreadyMarked, self).__init__("Position y={} and x={} is already marked".format(y, x))
 
+class StopPropagation(Exception):
+    """
+    Emitir essa exceção faz um evento parar de executar os próximos handlers
+    """
+    def __init__(self, state=None):
+        """
+        Use o parametro state para setar o novo estado da aplicação.
+        """
+        super(StopPropagation, self).__init__("StopPropagation")
+        self.state = state
+
 class Quit(Exception):
+    """
+    Emitir essa exceção faz o programa terminar sua execucao
+    """
     pass
 
 class Mouse(object):
@@ -37,11 +61,15 @@ class Mouse(object):
     MIDDLE_CLICKED = curses.BUTTON2_CLICKED
     RIGHT_CLICKED = curses.BUTTON3_CLICKED
 
-    def __init__(self):
-        _, x, y, _, button = curses.getmouse()
+    def __init__(self, x, y, button):
         self.x = x
         self.y = y
         self.button = button
+
+    @classmethod
+    def get_current(cls):
+        _, x, y, _, button = curses.getmouse()
+        return cls(x, y, button)
 
     def match(self, m):
         return self.button | m
@@ -49,9 +77,10 @@ class Mouse(object):
 class Key(str):
     pass
 
+Move = collections.namedtuple("Move", ["y", "x"])
 BaseState = collections.namedtuple(
     "State",
-    ["board", "player", "message", "parent"]
+    ["board", "player", "message", "parent", "last_move"]
 )
 
 class State(BaseState):
@@ -65,7 +94,8 @@ class State(BaseState):
             board=tuple(tuple("+" for _ in range(BOARD_WIDTH)) for _ in range(BOARD_HEIGHT)),
             player="O",
             message=None,
-            parent=None
+            parent=None,
+            last_move=None
         )
 
     def get_next_player(self):
@@ -84,7 +114,13 @@ class State(BaseState):
         return self.is_valid_position(y, x) and player in ("X", "O") and self.board[y][x] == player
 
     def display(self, message):
-        return State(self.board, self.player, message, self)
+        return State(
+            board = self.board,
+            player = self.player,
+            message = message,
+            parent = self,
+            last_move = self.last_move
+        )
 
     def mark(self, y, x):
         if self.is_marked(y, x):
@@ -98,7 +134,7 @@ class State(BaseState):
         board[y] = tuple(board[y])
         board = tuple(board)
         player = self.get_next_player()
-        return State(board, player, self.message, self)
+        return State(board, player, self.message, self, Move(y, x))
 
     def max_sequence(self, py, px, player=None):
         """
@@ -107,7 +143,7 @@ class State(BaseState):
         """
         if player is None:
             player = self.board[py][px]
-        if not self.is_marked_by(py, px):
+        if not self.is_marked_by(py, px, player):
             return 0
         mseq = 1
         for i, direction in enumerate(DIRECTIONS):
@@ -160,7 +196,7 @@ class State(BaseState):
                 seq = self.max_sequence(y, x, player)
                 if seq > mseq:
                     mseq = seq
-                if seq == 5:
+                if mseq == 5:
                     break
             if mseq == 5:
                 break
@@ -175,17 +211,18 @@ class State(BaseState):
 
 
 class Display(object):
-    __slots__ = ["window", "handlers", "has_colors"]
+    __slots__ = ["window", "handlers", "has_colors", "computer_player"]
 
     MOUSE_EVENT = object()
     KEY_EVENT = object()
     PREDRAW_EVENT = object()
     POSDRAW_EVENT = object()
     MARK_EVENT = object()
+    IA_MOVE = object()
 
     def __init__(self):
         self.handlers = {}
-    
+
     def initialize(self):
         self.window = curses.initscr()
         curses.start_color()
@@ -242,14 +279,14 @@ class Display(object):
     def display(self, message):
         width  = self.get_width()
         height = self.get_height()
-        lines = [s.center(width-2) for s in textwrap.wrap(message, width-2)]
+        lines = [s.center(width-2) for line in message.split("\n") for s in textwrap.wrap(line, width-2)]
         for i in range(len(lines)):
             lines[i] = "|".join(["", lines[i], ""])
         lines.insert(0, "="*width)
         lines.append("="*width)
         lines_count = len(lines)
         for i, line in enumerate(lines):
-            self.window.addstr((height//2)-((lines_count//1))+i, width, line)
+            self.window.addstr((height//2)-((lines_count//2))+i, width, line)
 
     def draw(self, state):
         width  = self.get_width()
@@ -280,7 +317,7 @@ class Display(object):
         self.window.refresh()
 
     def on(self, event, fn):
-        self.handlers.setdefault(event, []).append(fn)
+        self.handlers.setdefault(event, []).insert(0, fn)
 
     def once(self, event, fn):
         def cb(*args, **kwargs):
@@ -296,12 +333,40 @@ class Display(object):
 
     def trigger(self, event, state, *args, **kwargs):
         for fn in self.handlers.get(event, []):
-            state = fn(self, state, *args, **kwargs)
+            try:
+                state = fn(self, state, *args, **kwargs)
+            except StopPropagation as e:
+                if e.state:
+                    state = e.state
+                break
+        return state
+
+    def select_player(self, state):
+        state = state.display("Inform the player you want: \n - X \n - O \n (press in your keyboard)")
+        def disable_mouse(_, state, ev, *args, **kwargs):
+            state = state.display("Inform the player you want: \n - X \n - O \n (press the key in your keyboard)")
+            raise StopPropagation(state)
+        def receive_key(_, state, ev, *args, **kwargs):
+            ev = ev.upper()
+            if ev not in ('X', 'O'):
+                return state.display("Please, inform a valid player: X or O")
+            self.off(self.MOUSE_EVENT, disable_mouse)
+            self.off(self.KEY_EVENT, receive_key)
+            state = state.display("You selected the player %s"%ev)
+            if ev == 'X':
+                self.computer_player = 'O'
+                return self.trigger(self.IA_MOVE, state)
+            self.computer_player = 'X'
+            return state
+        self.on(self.MOUSE_EVENT, disable_mouse)
+        self.on(self.KEY_EVENT, receive_key)
         return state
 
     def loop(self, state):
+        curses_err = False
         try:
             self.initialize()
+            state = self.select_player(state)
             self.draw(state)
             while True:
                 ev = self.window.getch()
@@ -310,7 +375,7 @@ class Display(object):
                     args.append(Key(chr(ev)))
                     ev = self.KEY_EVENT
                 elif ev == curses.KEY_MOUSE:
-                    args.append(Mouse())
+                    args.append(Mouse.get_current())
                     ev = self.MOUSE_EVENT
                 try:
                     state = self.trigger(ev, state, *args)
@@ -323,8 +388,14 @@ class Display(object):
                     state = state.display(None)
         except (KeyboardInterrupt, Quit):
             pass
+        except curses.error as e:
+            curses_err = e
         finally:
             self.close()
+        if curses_err:
+            print("Curses returned error, so probably your terminal does not support curses or the width/height of your terminal is not suficient to the game run..Please, fix that!")
+            print("Original Curses error: %s"%curses_err)
+
         return state
 
 
@@ -345,10 +416,34 @@ def check_won(display, state, y, x):
         state = state.display("The player {} won".format(won))
         display.off(display.MOUSE_EVENT)
         display.once(display.MOUSE_EVENT, finish)
+        raise StopPropagation(state)
     return state
+
+def run_ia(display, state, *args, **kwargs):
+    i = state.get_next_states()
+    a = []
+    if state.parent.last_move is not None:
+        # a.append(lambda s: max(ss.max_sequence(ss.last_move.y, ss.last_move.x, state.get_next_player()) for ss in s.get_next_states()))
+        # a.append(lambda s: 3-max(sss.max_sequence(s.last_move.y, s.last_move.x, display.computer_player) for ss in s.get_next_states() for sss in ss.get_next_states()))
+        a.append(lambda s: math.sqrt(((state.parent.last_move.y-s.last_move.y)**2)+((state.parent.last_move.x-s.last_move.x)**2)))
+    a.append(lambda s: random.rand(0, 1) == 1) # Just a random factor
+    s = min(i, key=lambda s: [c(s) for c in a])
+    # Show what's the algorithm choice
+    s = s.display(str([c(s) for c in a]))
+
+    # s[0] = s[0].display(str(s[0].max_sequence(state.parent.last_move.y, state.parent.last_move.x, display.computer_player)))
+    return display.trigger(display.MARK_EVENT, s, s.last_move.y, s.last_move.x)
+
+def should_ia_run(display, state, y, x):
+    if state.player == display.computer_player:
+        return display.trigger(display.IA_MOVE, state)
+    return state
+
 if __name__ == "__main__":
     state = State.get_initial_state()
     display = Display()
     display.on(display.MOUSE_EVENT, process_mouse_click)
+    display.on(display.MARK_EVENT, should_ia_run)
     display.on(display.MARK_EVENT, check_won)
+    display.on(display.IA_MOVE, run_ia)
     display.loop(state)
