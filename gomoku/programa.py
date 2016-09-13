@@ -426,7 +426,7 @@ def run_ia(display, state, *args, **kwargs):
         # a.append(lambda s: max(ss.max_sequence(ss.last_move.y, ss.last_move.x, state.get_next_player()) for ss in s.get_next_states()))
         # a.append(lambda s: 3-max(sss.max_sequence(s.last_move.y, s.last_move.x, display.computer_player) for ss in s.get_next_states() for sss in ss.get_next_states()))
         a.append(lambda s: math.sqrt(((state.parent.last_move.y-s.last_move.y)**2)+((state.parent.last_move.x-s.last_move.x)**2)))
-    a.append(lambda s: random.rand(0, 1) == 1) # Just a random factor
+    a.append(lambda s: random.randint(0, 1) == 1) # Just a random factor
     s = min(i, key=lambda s: [c(s) for c in a])
     # Show what's the algorithm choice
     s = s.display(str([c(s) for c in a]))
