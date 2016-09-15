@@ -6,7 +6,7 @@ __all__ = ["Display", "State"]
 BOARD_WIDTH = 15
 BOARD_HEIGHT = 15
 
-DIRECTIONS = (
+ALL_DIRECTIONS = (
     lambda y, x, n: [y, x-n], # Esquerda
     lambda y, x, n: [y, x+n], # Direita
     lambda y, x, n: [y-n, x], # Superior
@@ -14,6 +14,21 @@ DIRECTIONS = (
     lambda y, x, n: [y-n, x-n], # Diagonal Superior Esquerda
     lambda y, x, n: [y+n, x+n], # Diagonal Inferior Direita
     lambda y, x, n: [y-n, x+n], # Diagonal Superior Direita
+    lambda y, x, n: [y+n, x-n] # Diagonal Inferior Esquerda
+)
+
+###############################################
+# Estas direcoes so devem ser usadas no caso ##
+# de estar varrendo toda a matriz            ##
+###############################################
+OPTIMIZED_DIRECTIONS = (
+    # lambda y, x, n: [y, x-n], # Esquerda
+    lambda y, x, n: [y, x+n], # Direita
+    # lambda y, x, n: [y-n, x], # Superior
+    lambda y, x, n: [y+n, x], # Inferior
+    # lambda y, x, n: [y-n, x-n], # Diagonal Superior Esquerda
+    lambda y, x, n: [y+n, x+n], # Diagonal Inferior Direita
+    # lambda y, x, n: [y-n, x+n], # Diagonal Superior Direita
     lambda y, x, n: [y+n, x-n] # Diagonal Inferior Esquerda
 )
 
@@ -135,7 +150,7 @@ class State(BaseState):
         player = self.get_next_player()
         return State(board, player, self.message, self, Move(y, x))
 
-    def max_sequence(self, py, px, player=None):
+    def max_sequence(self, py, px, player=None, directions=ALL_DIRECTIONS):
         """
         Dado um ponto, checa a maior sequencia possivel que eh possivel alcancar
         partindo deste ponto
@@ -145,7 +160,7 @@ class State(BaseState):
         if not self.is_marked_by(py, px, player):
             return 0
         mseq = 1
-        for i, direction in enumerate(DIRECTIONS):
+        for direction in directions:
             seq = 1
             for n in range(1, 5):
                 y2, x2 = direction(py, px, n)
@@ -156,7 +171,7 @@ class State(BaseState):
                 mseq = seq
         return mseq
 
-    def won(self, py, px, player=None):
+    def won(self, py, px, player=None, directions=ALL_DIRECTIONS):
         """
         Checa se ha uma sequencia valida a partir de um ponto inicial no tabuleiro
         """
@@ -164,7 +179,7 @@ class State(BaseState):
             player = self.board[py][px]
         if not self.is_marked_by(py, px, player):
             return None
-        for i, direction in enumerate(DIRECTIONS):
+        for direction in directions:
             won = True
             for n in range(1, 5):
                 y2, x2 = direction(py, px, n)
@@ -175,30 +190,58 @@ class State(BaseState):
                 return player
         return None
 
+    def count_sequences(self, length, player=None):
+        """
+        Conta o numero de sequencias de determinado tamanho de um jogador especifico
+        """
+        result = 0
+        # marked = []
+        # for y in range(BOARD_HEIGHT):
+        #     for x in range(BOARD_WIDTH):
+        #         for direction in OPTIMIZED_DIRECTIONS:
+        #             for n in range(1, 5):
+
+        return result
+
     def check_won(self, player=None):
         """
         Checa se ha uma sequencia valida partindo de cada ponto do tabuleiro
         """
-        for y in range(BOARD_HEIGHT):
-            for x in range(BOARD_WIDTH):
-                result = self.won(y, x, player)
-                if result:
-                    return result
+        # for y in range(BOARD_HEIGHT):
+        #     for x in range(BOARD_WIDTH):
+        #         result = self.won(y, x, player, OPTIMIZED_DIRECTIONS)
+        #         if result:
+        #             return result
+        state = self
+        while state and state.last_move:
+            result = self.won(state.last_move.y, state.last_move.x, player)
+            if result:
+                return result
+            state = state.parent
 
     def check_max_sequence(self, player=None):
         """
         Checa a maior sequencia encontrada partindo de cada ponto do tabuleiro
         """
+        # mseq = 0
+        # for y in range(BOARD_HEIGHT):
+        #     for x in range(BOARD_WIDTH):
+        #         seq = self.max_sequence(y, x, player, OPTIMIZED_DIRECTIONS)
+        #         if seq > mseq:
+        #             mseq = seq
+        #         if mseq == 5:
+        #             break
+        #     if mseq == 5:
+        #         break
+        state = self
         mseq = 0
-        for y in range(BOARD_HEIGHT):
-            for x in range(BOARD_WIDTH):
-                seq = self.max_sequence(y, x, player)
-                if seq > mseq:
-                    mseq = seq
-                if mseq == 5:
-                    break
+        while state and state.last_move:
+            seq = self.max_sequence(state.last_move.y, state.last_move.x, player)
+            if seq > mseq:
+                mseq = seq
             if mseq == 5:
                 break
+            state = state.parent
         return mseq
 
     def get_next_states(self):
@@ -424,12 +467,14 @@ def run_ia(display, state, *args, **kwargs):
     if state.parent.last_move is not None:
         a.append(lambda s: max(ss.max_sequence(ss.last_move.y, ss.last_move.x, state.get_next_player()) for ss in s.get_next_states()))
         # a.append(lambda s: 3-max(sss.max_sequence(s.last_move.y, s.last_move.x, display.computer_player) for ss in s.get_next_states() for sss in ss.get_next_states()))
-        a.append(lambda s: math.sqrt(((state.parent.last_move.y-s.last_move.y)**2)+((state.parent.last_move.x-s.last_move.x)**2)))
+        # a.append(lambda s: math.sqrt(((state.parent.last_move.y-s.last_move.y)**2)+((state.parent.last_move.x-s.last_move.x)**2)))
+    a.append(lambda s: 5-s.max_sequence(s.last_move.y, s.last_move.y, display.computer_player))
     a.append(lambda s: random.randint(0, 10000)) # Just a random factor
     s = min(i, key=lambda s: [c(s) for c in a])
     # Show what's the algorithm choice
     s = s.display(str([c(s) for c in a]))
-    time.sleep(1)
+    # s = s.display(str(s.check_won()))
+    # time.sleep(1)
 
     # s[0] = s[0].display(str(s[0].max_sequence(state.parent.last_move.y, state.parent.last_move.x, display.computer_player)))
     return display.trigger(display.MARK_EVENT, s, s.last_move.y, s.last_move.x)
