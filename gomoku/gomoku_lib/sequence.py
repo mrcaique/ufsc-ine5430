@@ -69,12 +69,12 @@ class Sequence(BaseSequence):
             return self
         if self.match_start(move):
             return Sequence(
-                tuple([move]+list(self.moves)),
+                (move,)+self.moves,
                 self.directions
             )
         elif self.match_end(move):
             return Sequence(
-                tuple(list(self.moves)+[move]),
+                self.moves+(move,),
                 self.directions
             )
         return self
