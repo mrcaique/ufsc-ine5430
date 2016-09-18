@@ -136,17 +136,24 @@ class Display(object):
         return state
 
     def select_player(self, state):
-        state = state.display("Inform the player you want: \n - X \n - O \n (press in your keyboard)")
+        state = state.display("Inform the player you want: \n - X \n - O \n - I \n (press in your keyboard)")
         def disable_mouse(_, state, ev, *args, **kwargs):
-            state = state.display("Inform the player you want: \n - X \n - O \n (press the key in your keyboard)")
+            state = state.display("Inform the player you want: \n - X \n - O \n - I (to let the AI play against itself)\n (press the key in your keyboard)")
+            raise StopPropagation(state)
+        def disable_mouse_forever(_, state):
+            state = state.display("Let the AI play against itself! \o/")
             raise StopPropagation(state)
         def receive_key(_, state, ev, *args, **kwargs):
             ev = ev.upper()
-            if ev not in ('X', 'O'):
-                return state.display("Please, inform a valid player: X or O")
+            if ev not in ('X', 'O', 'I'):
+                return state.display("Please, inform a valid player: X, O or I")
             self.off(self.MOUSE_EVENT, disable_mouse)
             self.off(self.KEY_EVENT, receive_key)
             state = state.display("You selected the player %s"%ev)
+            if ev == 'I':
+                self.computer_player = 'OX'
+                self.on(self.MOUSE_EVENT, disable_mouse_forever)
+                return self.trigger(self.IA_MOVE, state)
             if ev == 'X':
                 self.computer_player = 'O'
                 return self.trigger(self.IA_MOVE, state)

@@ -88,5 +88,9 @@ class Sequence(BaseSequence):
         for directions in zip(ALL_DIRECTIONS[::2], ALL_DIRECTIONS[1::2]):
             yield cls((move,), directions)
 
+    @classmethod
+    def get_empty(cls):
+        return cls(tuple(), tuple())
+
     def __repr__(self):
         return "Sequence(moves={})".format(self.moves)

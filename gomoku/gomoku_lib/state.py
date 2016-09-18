@@ -1,6 +1,7 @@
 # encoding: utf-8
 import collections, copy
 from .sequences import Sequences
+from .sequence import Sequence
 from .constants import BOARD_WIDTH, BOARD_HEIGHT
 from .move import Move
 from .exceptions import AlreadyMarked
@@ -83,7 +84,7 @@ class State(BaseState):
             sequences = sequences.get_by_player(player)
         sequences = sequences.get_by_position(py, px)
         if not sequences:
-            return 0
+            return Sequence.get_empty()
         return max(sequences, key=len)
 
     def won(self, py, px, player=None):
@@ -122,7 +123,7 @@ class State(BaseState):
         if player is not None:
             sequences = sequences.get_by_player(player)
         if not sequences:
-            return 0
+            return Sequence.get_empty()
         return max(sequences, key=len)
 
     def get_next_states(self):

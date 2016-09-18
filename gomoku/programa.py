@@ -46,7 +46,7 @@ def run_ai(display, state, *args, **kwargs):
     return display.trigger(display.MARK_EVENT, s, s.last_move.y, s.last_move.x)
 
 def should_ia_run(display, state, y, x):
-    if state.player == display.computer_player:
+    if state.player in display.computer_player:
         # Update the screen so the user sees the click instantly..
         display.draw(state)
         return display.trigger(display.IA_MOVE, state)
