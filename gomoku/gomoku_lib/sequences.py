@@ -36,7 +36,7 @@ class Sequences(BaseSequences):
         Retorna um iterator que contem apenas as sequencias de um determinado
         jogador
         """
-        sequences = (sequence for sequence in self if sequence.player == player)
+        sequences = (sequence for sequence in self if sequence.player in player)
         return Sequences(
             sequences=tuple(sequences),
             board=None

@@ -136,29 +136,30 @@ class Display(object):
         return state
 
     def select_player(self, state):
-        state = state.display("Inform the player you want: \n - X \n - O \n - I \n (press in your keyboard)")
+        state = state.display("Inform the player you want: \n - X \n - O \n - V \n (press in your keyboard)")
         def disable_mouse(_, state, ev, *args, **kwargs):
-            state = state.display("Inform the player you want: \n - X \n - O \n - I (to let the AI play against itself)\n (press the key in your keyboard)")
+            state = state.display("Inform the player you want: \n - X \n - O \n - V (let the AI play against itself)\n (press the key in your keyboard)")
             raise StopPropagation(state)
         def disable_mouse_forever(_, state):
             state = state.display("Let the AI play against itself! \o/")
             raise StopPropagation(state)
         def receive_key(_, state, ev, *args, **kwargs):
             ev = ev.upper()
-            if ev not in ('X', 'O', 'I'):
-                return state.display("Please, inform a valid player: X, O or I")
+            if ev not in ('X', 'O', 'V'):
+                raise StopPropagation(state.display("Please, inform a valid player: X, O or V"))
             self.off(self.MOUSE_EVENT, disable_mouse)
             self.off(self.KEY_EVENT, receive_key)
             state = state.display("You selected the player %s"%ev)
-            if ev == 'I':
+            if ev == 'V':
                 self.computer_player = 'OX'
                 self.on(self.MOUSE_EVENT, disable_mouse_forever)
-                return self.trigger(self.IA_MOVE, state)
-            if ev == 'X':
+                state = self.trigger(self.IA_MOVE, state)
+            elif ev == 'X':
                 self.computer_player = 'O'
-                return self.trigger(self.IA_MOVE, state)
-            self.computer_player = 'X'
-            return state
+                state = self.trigger(self.IA_MOVE, state)
+            else:
+                self.computer_player = 'X'
+            raise StopPropagation(state)
         self.on(self.MOUSE_EVENT, disable_mouse)
         self.on(self.KEY_EVENT, receive_key)
         return state

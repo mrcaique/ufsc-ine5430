@@ -51,10 +51,22 @@ def should_ia_run(display, state, y, x):
         display.draw(state)
         return display.trigger(display.IA_MOVE, state)
     return state
+
+def undo(display, state, ev, *args, **kwargs):
+    """
+    Desfaz o status ate a ultima jogada do jogador..
+    """
+    if ev.upper() == "U" and state.player not in display.computer_player:
+        p = state.parent
+        while state.last_move == p.last_move or p.player != state.player:
+            p = p.parent
+        return p
+    return state
 state = State.get_initial_state()
 display = Display()
 display.on(display.MOUSE_EVENT, process_mouse_click)
 display.on(display.MARK_EVENT, should_ia_run)
 display.on(display.MARK_EVENT, check_won)
+display.on(display.KEY_EVENT, undo)
 display.on(display.IA_MOVE, run_ai)
 display.loop(state)
