@@ -38,7 +38,6 @@ def run_ai(display, state, *args, **kwargs):
     a.append(lambda s: -1000*len(s.check_max_sequence(display.computer_player)))
     s = min(i, key=lambda s: [c(s) for c in a])
     # Show what's the algorithm choice
-    s = s.display(str([c(s) for c in a]))
     # s = s.display(str(s.check_won()))
     # time.sleep(1)
 

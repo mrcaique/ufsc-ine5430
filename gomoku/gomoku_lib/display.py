@@ -149,7 +149,7 @@ class Display(object):
                 raise StopPropagation(state.display("Please, inform a valid player: X, O or V"))
             self.off(self.MOUSE_EVENT, disable_mouse)
             self.off(self.KEY_EVENT, receive_key)
-            state = state.display("You selected the player %s"%ev)
+            state = state.display("You selected the player %s\n Tip: You can undo your movements pressing the button U in your keyboard"%ev)
             if ev == 'V':
                 self.computer_player = 'OX'
                 self.on(self.MOUSE_EVENT, disable_mouse_forever)
