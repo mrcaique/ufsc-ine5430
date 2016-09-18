@@ -61,11 +61,13 @@ def undo(display, state, ev, *args, **kwargs):
             p = p.parent
         return p
     return state
-state = State.get_initial_state()
-display = Display()
-display.on(display.MOUSE_EVENT, process_mouse_click)
-display.on(display.MARK_EVENT, should_ia_run)
-display.on(display.MARK_EVENT, check_won)
-display.on(display.KEY_EVENT, undo)
-display.on(display.IA_MOVE, run_ai)
-display.loop(state)
+
+if __name__ == "__main__":
+    state = State.get_initial_state()
+    display = Display()
+    display.on(display.MOUSE_EVENT, process_mouse_click)
+    display.on(display.MARK_EVENT, should_ia_run)
+    display.on(display.MARK_EVENT, check_won)
+    display.on(display.KEY_EVENT, undo)
+    display.on(display.IA_MOVE, run_ai)
+    display.loop(state)
