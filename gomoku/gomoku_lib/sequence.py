@@ -2,14 +2,16 @@
 import collections
 from .constants import ALL_DIRECTIONS
 BaseSequence = collections.namedtuple("BaseSequence", ["moves", "directions"])
+
+
 class Sequence(BaseSequence):
     def __eq__(self, other):
         if not isinstance(other, Sequence):
-            raise TypeError("Cannot compare Sequence with %s"%type(other))
+            raise TypeError("Cannot compare Sequence with %s" % type(other))
         if self.directions != other.directions:
             return False
         return all(move in other.moves for move in self.moves) or \
-               all(move in self.moves for move in other.moves)
+            all(move in self.moves for move in other.moves)
 
     def __len__(self):
         return len(self.moves)
@@ -38,11 +40,11 @@ class Sequence(BaseSequence):
 
     def can_merge_start(self, other):
         return self.directions == other.directions and \
-                self.moves[0] == other.moves[-1]
+            self.moves[0] == other.moves[-1]
 
     def can_merge_end(self, other):
         return self.directions == other.directions and \
-                self.moves[-1] == other.moves[0]
+            self.moves[-1] == other.moves[0]
 
     def can_merge(self, other):
         return (self.can_merge_start(other) or self.can_merge_end(other))
@@ -60,23 +62,41 @@ class Sequence(BaseSequence):
         moves = moves[1:]
         for move in moves:
             seq = sequence.append(move)
-            assert seq != sequence, "{} should modify {} when added to it, but it didn't".format(move, sequence)
+            assert seq != sequence, \
+                "{} should modify {} when added to it, but it didn't".format(
+                    move, sequence
+                )
             sequence = seq
         return sequence
+
+    def is_blocked(self, state, n):
+        """
+        Retorna verdadeiro se este jogo estiver bloqueado em n casas na direcao
+        proposta
+        """
+        bottom = self.moves[0]
+        top = self.moves[-1]
+        bottom_move = self.directions[0]
+        top_move = self.directions[-1]
+        player = self.player
+        for i in range(n):
+            bottom = bottom.apply_direction(bottom_move)
+            top = top.apply_direction(top_move)
+            if state.is_marked(bottom.y, bottom.x) and not \
+                    state.is_marked_by(bottom.y, bottom.x, player):
+                return True
+            if state.is_marked(top.y, top.x) and not \
+                    state.is_marked_by(top.y, top.x, player):
+                return True
+        return False
 
     def append(self, move):
         if move.player != self.player or move in self.moves:
             return self
         if self.match_start(move):
-            return Sequence(
-                (move,)+self.moves,
-                self.directions
-            )
+            return Sequence((move, ) + self.moves, self.directions)
         elif self.match_end(move):
-            return Sequence(
-                self.moves+(move,),
-                self.directions
-            )
+            return Sequence(self.moves + (move, ), self.directions)
         return self
 
     @property
@@ -86,7 +106,7 @@ class Sequence(BaseSequence):
     @classmethod
     def get_for_move(cls, move):
         for directions in zip(ALL_DIRECTIONS[::2], ALL_DIRECTIONS[1::2]):
-            yield cls((move,), directions)
+            yield cls((move, ), directions)
 
     @classmethod
     def get_empty(cls):

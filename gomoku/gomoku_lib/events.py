@@ -1,7 +1,9 @@
 # encoding: utf-8
-import collections, curses
+import collections
+import curses
 
 BaseMouse = collections.namedtuple("BaseMouse", ["x", "y", "button"])
+
 
 class Mouse(BaseMouse):
     LEFT_CLICKED = curses.BUTTON1_CLICKED
@@ -15,6 +17,7 @@ class Mouse(BaseMouse):
 
     def match(self, m):
         return self.button | m
+
 
 class Key(str):
     pass

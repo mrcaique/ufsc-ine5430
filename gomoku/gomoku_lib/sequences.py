@@ -1,17 +1,19 @@
 # encoding: utf-8
-import collections, itertools
+import collections
+import itertools
 from .constants import BOARD_WIDTH, BOARD_HEIGHT
 from .sequence import Sequence
 
-
 BaseSequences = collections.namedtuple("BaseSequences", ["sequences", "board"])
+
+
 class Sequences(BaseSequences):
     @classmethod
     def get_initial_sequences(cls):
-        return cls(
-            sequences = tuple(),
-            board = tuple(tuple(tuple() for _ in range(BOARD_WIDTH)) for _ in range(BOARD_HEIGHT))
-        )
+        return cls(sequences=tuple(),
+                   board=tuple(
+                       tuple(tuple() for _ in range(BOARD_WIDTH))
+                       for _ in range(BOARD_HEIGHT)))
 
     def __iter__(self):
         return iter(self.sequences)
@@ -24,23 +26,21 @@ class Sequences(BaseSequences):
         Retorna um iterator que contem apenas as sequencias presentes em um
         determinado ponto
         """
-        matcher = lambda seq: any(move.y==py and move.x==px for move in seq)
-        sequences = (sequence for sequence in self if matcher(sequence))
-        return Sequences(
-            sequences=tuple(sequences),
-            board=None
+        sequences = (
+            seq
+            for seq in self
+            if any(move.y == py and move.x == px for move in seq)
         )
+        return Sequences(sequences=tuple(sequences), board=None)
 
     def get_by_player(self, player):
         """
         Retorna um iterator que contem apenas as sequencias de um determinado
         jogador
         """
-        sequences = (sequence for sequence in self if sequence.player in player)
-        return Sequences(
-            sequences=tuple(sequences),
-            board=None
-        )
+        sequences = (sequence for sequence in self
+                     if sequence.player in player)
+        return Sequences(sequences=tuple(sequences), board=None)
 
     def get_by_length(self, length):
         """
@@ -48,10 +48,7 @@ class Sequences(BaseSequences):
         especificado
         """
         sequences = (sequence for sequence in self if len(sequence) == length)
-        return Sequences(
-            sequences=tuple(sequences),
-            board=None
-        )
+        return Sequences(sequences=tuple(sequences), board=None)
 
     def append(self, state, move):
         if self.board is None:
@@ -67,12 +64,21 @@ class Sequences(BaseSequences):
                 # sequence..so ignore that sequence
                 continue
             seq = sequence.append(move)
-            assert seq != sequence, "{} should modify {} when added to it, but it didn't".format(move, sequence)
+            assert seq != sequence, \
+                "{} should modify {} when added to it, but it didn't".format(
+                    move, sequence
+                )
             sequence_move = sequence.bottom_end()
             if sequence_move != move:
                 sequence_move = sequence.top_end()
-            assert sequence_move == move, "{} does not match {}, so {} should not be in the {} position".format(sequence_move, move, sequence_move, move)
-            assert sequence in sequences, "{} is not in sequences list".format(sequence)
+            assert sequence_move == move, \
+                ("{} does not match {}, " +
+                 "so {} should not be in the {} position").format(
+                    sequence_move, move, sequence_move, move
+                )
+            assert sequence in sequences, "{} is not in sequences list".format(
+                sequence
+            )
             # Remove the old sequence from the sequences list..
             sequences.remove(sequence)
             # Remove the old sequence from all the old positions
@@ -113,10 +119,13 @@ class Sequences(BaseSequences):
                 board[y][x] = tuple(board[y][x])
                 board[y] = tuple(board[y])
         # Here, we filter possible sequences that can be merged with the move..
-        seq_groups = (list(seq_group) for _, seq_group in itertools.groupby(new_local_sequences, lambda seq: seq.directions))
+        seq_groups = (list(seq_group)
+                      for _, seq_group in itertools.groupby(
+                          new_local_sequences, lambda seq: seq.directions))
         # Well..if we want merges, we need to have more than a sequence in the
         # group..(grouped by directions)
-        seq_groups = (seq_group for seq_group in seq_groups if len(seq_group) > 1)
+        seq_groups = (seq_group for seq_group in seq_groups
+                      if len(seq_group) > 1)
         for seq_group in seq_groups:
             merged = None
             seq = None
@@ -125,7 +134,9 @@ class Sequences(BaseSequences):
                 seq = seq_group.pop()
                 # Remove the old sequence that will be added to the merge from
                 # the sequences list
-                assert seq in sequences, "{} should be in sequences list..but it does not exist in that list".format(seq)
+                assert seq in sequences, \
+                    ("{} should be in sequences list.." +
+                     "but it does not exist in that list").format(seq)
                 sequences.remove(seq)
                 # Remove the endings of the old sequence that will be merged
                 for end in seq.ends():
@@ -134,7 +145,11 @@ class Sequences(BaseSequences):
                     y, x = end.y, end.x
                     board[y] = list(board[y])
                     board[y][x] = list(board[y][x])
-                    assert seq in board[y][x], "{} should have end in {} but it does not exist in it".format(seq, end)
+                    assert seq in board[y][x], \
+                        ("{} should have end in {} but it does not " +
+                         "exist in it").format(
+                            seq, end
+                        )
                     board[y][x].remove(seq)
                     board[y][x] = tuple(board[y][x])
                     board[y] = tuple(board[y])
@@ -156,7 +171,4 @@ class Sequences(BaseSequences):
                     board[y][x] = tuple(board[y][x])
                     board[y] = tuple(board[y])
         # Return the new Sequences object..
-        return Sequences(
-            sequences = tuple(sequences),
-            board = tuple(board)
-        )
+        return Sequences(sequences=tuple(sequences), board=tuple(board))

@@ -1,5 +1,7 @@
 # encoding: utf-8
-import collections, copy
+import collections
+import copy
+import time
 from .sequences import Sequences
 from .sequence import Sequence
 from .constants import BOARD_WIDTH, BOARD_HEIGHT
@@ -7,9 +9,9 @@ from .move import Move
 from .exceptions import AlreadyMarked
 
 BaseState = collections.namedtuple(
-    "BaseState",
-    ["board", "player", "message", "parent", "last_move", "sequences"]
-)
+    "BaseState", ["board", "player", "move_count", "message", "parent",
+                  "last_move", "sequences", "started_at"])
+
 
 class State(BaseState):
     """
@@ -18,20 +20,28 @@ class State(BaseState):
 
     @classmethod
     def get_initial_state(cls):
-        return cls(
-            board=tuple(tuple("+" for _ in range(BOARD_WIDTH)) for _ in range(BOARD_HEIGHT)),
-            player="O",
-            message=None,
-            parent=None,
-            last_move=None,
-            sequences=Sequences.get_initial_sequences()
-        )
+        return cls(board=tuple(
+            tuple("+" for _ in range(BOARD_WIDTH))
+            for _ in range(BOARD_HEIGHT)),
+                   player="O",
+                   started_at=time.time(),
+                   move_count=0,
+                   message=None,
+                   parent=None,
+                   last_move=None,
+                   sequences=Sequences.get_initial_sequences())
 
     def get_next_player(self):
         if self.player == "X":
             return "O"
         else:
             return "X"
+
+    def finished(self):
+        """
+        Retorna se o jogo ja terminou
+        """
+        return self.won() or self.move_count == BOARD_WIDTH * BOARD_HEIGHT
 
     def is_valid_position(self, y, x):
         return y >= 0 and x >= 0 and y < BOARD_HEIGHT and x < BOARD_WIDTH
@@ -40,17 +50,19 @@ class State(BaseState):
         return self.is_valid_position(y, x) and self.board[y][x] in ("X", "O")
 
     def is_marked_by(self, y, x, player):
-        return self.is_valid_position(y, x) and player in ("X", "O") and self.board[y][x] == player
+        return self.is_valid_position(
+            y, x) and player in ("X", "O") and self.board[y][x] == player
 
     def display(self, message):
         return State(
-            board = self.board,
-            player = self.player,
-            message = message,
-            parent = self,
-            last_move = self.last_move,
-            sequences = self.sequences
-        )
+            board=self.board,
+            started_at=self.started_at,
+            move_count=self.move_count,
+            player=self.player,
+            message=message,
+            parent=self,
+            last_move=self.last_move,
+            sequences=self.sequences)
 
     def mark(self, y, x):
         if self.is_marked(y, x):
@@ -66,18 +78,19 @@ class State(BaseState):
         player = self.get_next_player()
         move = Move(y, x, self.player)
         return State(
-            board = board,
-            player = player,
-            message = self.message,
-            parent = self,
-            last_move = move,
-            sequences = self.sequences.append(self, move)
-        )
+            board=board,
+            started_at=self.started_at,
+            move_count=self.move_count + 1,
+            player=player,
+            message=self.message,
+            parent=self,
+            last_move=move,
+            sequences=self.sequences.append(self, move))
 
     def max_sequence(self, py, px, player=None):
         """
-        Dado um ponto, checa a maior sequencia possivel que eh possivel alcancar
-        partindo deste ponto
+        Dado um ponto, checa a maior sequencia possivel que eh possivel
+        alcancar partindo deste ponto
         """
         sequences = self.sequences
         if player is not None:
@@ -89,15 +102,16 @@ class State(BaseState):
 
     def won(self, py, px, player=None):
         """
-        Checa se ha uma sequencia vencedora a partir de um ponto inicial no tabuleiro
+        Checa se ha uma sequencia vencedora a partir de um ponto inicial no
+        tabuleiro
         """
         seq = self.max_sequence(py, px, player)
-        if len(seq) >= 5:
-            return seq.player
+        return len(seq) >= 5
 
     def count_sequences(self, length, player=None):
         """
-        Conta o numero de sequencias de determinado tamanho de um jogador especifico
+        Conta o numero de sequencias de determinado tamanho de um jogador
+        especifico
         """
         sequences = self.sequences
         if player is not None:
@@ -112,8 +126,7 @@ class State(BaseState):
         Checa se ha uma sequencia vencedora partindo de cada ponto do tabuleiro
         """
         seq = self.check_max_sequence(player)
-        if seq >= 5:
-            return seq.player
+        return len(seq) >= 5
 
     def check_max_sequence(self, player=None):
         """

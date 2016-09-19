@@ -1,8 +1,11 @@
 # encoding: utf-8
-import curses, textwrap
+import curses
+import textwrap
+import time
 from .constants import BOARD_WIDTH, BOARD_HEIGHT
 from .events import Mouse, Key
 from .exceptions import Quit, GameWarning, StopPropagation, InvalidLocation
+
 
 class Display(object):
     __slots__ = ["window", "handlers", "has_colors", "computer_player"]
@@ -39,10 +42,10 @@ class Display(object):
         curses.endwin()
 
     def get_char(self, y, x, state):
-        xm = x%2
-        ym = y%2
+        xm = x % 2
+        ym = y % 2
         if xm == 0 and ym == 0:
-            y, x = self.locate(y,x)
+            y, x = self.locate(y, x)
             if not state.is_marked(y, x):
                 return "+"
             elif state.is_marked_by(y, x, "X"):
@@ -58,32 +61,48 @@ class Display(object):
 
     def locate(self, y, x):
         """
-        Given y and x in the actual screen, locate the real position in the board
+        Dado y e x, localiza a posicao correspondente no tabuleiro
         """
-        if y%2 != 0 or x%2 != 0:
+        if y % 2 != 0 or x % 2 != 0:
             raise InvalidLocation(y, x)
-        return [y//2, x//2]
+        return [y // 2, x // 2]
 
     def get_width(self):
-        return (BOARD_WIDTH*2)-1
+        return (BOARD_WIDTH * 2) - 1
 
     def get_height(self):
-        return (BOARD_HEIGHT*2)-1
+        return (BOARD_HEIGHT * 2) - 1
 
-    def display(self, message):
-        width  = self.get_width()
+    def format(self, message):
+        width = self.get_width()
         height = self.get_height()
-        lines = [s.center(width-2) for line in message.split("\n") for s in textwrap.wrap(line, width-2)]
+        lines = [s.center(width - 2)
+                 for line in message.split("\n")
+                 for s in textwrap.wrap(line, width - 2)]
         for i in range(len(lines)):
             lines[i] = "|".join(["", lines[i], ""])
-        lines.insert(0, "="*width)
-        lines.append("="*width)
+        lines.insert(0, "=" * width)
+        lines.append("=" * width)
+        return lines
+
+    def display_message(self, message):
+        width = self.get_width()
+        height = self.get_height()
+        lines = self.format(message)
         lines_count = len(lines)
         for i, line in enumerate(lines):
-            self.window.addstr((height//2)-((lines_count//2))+i, width, line)
+            self.window.addstr((height // 2) - ((lines_count // 2)) + i, width,
+                               line)
+
+    def display_status(self, message):
+        width = self.get_width()
+        lines = self.format(message)
+        lines_count = len(lines)
+        for i, line in enumerate(lines):
+            self.window.addstr(((lines_count // 2)) + i, width, line)
 
     def draw(self, state):
-        width  = self.get_width()
+        width = self.get_width()
         height = self.get_height()
         self.window.clear()
         for x in range(width):
@@ -107,7 +126,18 @@ class Display(object):
                 else:
                     self.window.addch(y, x, ord(char))
         if state.message:
-            self.display(state.message)
+            self.display_message(state.message)
+        dif = time.time() - state.started_at
+        dif_type = "seconds"
+        if dif > 60:
+            dif /= 60.0
+            dif_type = "minutes"
+        if dif > 60:
+            dif /= 60.0
+            dif_type = "hours"
+        self.display_status(
+            "Pieces in board %d\nActual player: %s\nPlaying for: %.2f %s" %
+            (state.move_count, state.player, dif, dif_type))
         self.window.refresh()
 
     def on(self, event, fn):
@@ -116,7 +146,8 @@ class Display(object):
     def once(self, event, fn):
         def cb(*args, **kwargs):
             self.off(event, cb)
-            return fn(*args,**kwargs)
+            return fn(*args, **kwargs)
+
         self.on(event, cb)
 
     def off(self, event, fn=None):
@@ -136,30 +167,72 @@ class Display(object):
         return state
 
     def select_player(self, state):
-        state = state.display("Inform the player you want: \n - X \n - O \n - V \n (press in your keyboard)")
+        state = state.display(
+            "Enter the player you want: \n" +
+            "- X \n" +
+            "- O \n" +
+            "- V (let the AI play against itself)\n " +
+            "- M (let you play against yourself (?))\n" +
+            "(press the key in your keyboard)"
+        )
+
         def disable_mouse(_, state, ev, *args, **kwargs):
-            state = state.display("Inform the player you want: \n - X \n - O \n - V (let the AI play against itself)\n (press the key in your keyboard)")
+            state = state.display(
+                "Enter the player you want: \n " +
+                "- X \n" +
+                "- O \n" +
+                "- V (let the AI play against itself)\n" +
+                "- M (let you play against yourself (?))\n" +
+                "(press the key in your keyboard)"
+            )
             raise StopPropagation(state)
+
         def disable_mouse_forever(_, state):
             state = state.display("Let the AI play against itself! \o/")
             raise StopPropagation(state)
+
         def receive_key(_, state, ev, *args, **kwargs):
             ev = ev.upper()
-            if ev not in ('X', 'O', 'V'):
-                raise StopPropagation(state.display("Please, inform a valid player: X, O or V"))
+            if ev not in ('X', 'O', 'V', 'M'):
+                raise StopPropagation(
+                    state.display(
+                        "Please, inform a valid player: X, O, V or M"
+                    )
+                )
             self.off(self.MOUSE_EVENT, disable_mouse)
             self.off(self.KEY_EVENT, receive_key)
-            state = state.display("You selected the player %s\n Tip: You can undo your movements pressing the button U in your keyboard"%ev)
-            if ev == 'V':
+            if ev == 'M':
+                self.computer_player = ''
+                state = state.display(
+                    "You entered the manual mode. " +
+                    "In this mode, " +
+                    "we can battle with another person easily. " +
+                    "Just remember that the first player is O, " +
+                    "and the next is X. :)"
+                )
+            elif ev == 'V':
                 self.computer_player = 'OX'
                 self.on(self.MOUSE_EVENT, disable_mouse_forever)
                 state = self.trigger(self.IA_MOVE, state)
+                state = state.display(
+                    "You entered the AI vs. AI mode. " +
+                    "Sit down and let the computer battle against itself. :)"
+                )
             elif ev == 'X':
                 self.computer_player = 'O'
                 state = self.trigger(self.IA_MOVE, state)
+                state = state.display(
+                    ("You selected the player %s\n" +
+                     "Tip: You can undo your movements pressing the button U " +
+                     "in your keyboard") % ev)
             else:
                 self.computer_player = 'X'
+                state = state.display(
+                    ("You selected the player %s\n" +
+                     "Tip: You can undo your movements pressing the button U " +
+                     "in your keyboard") % ev)
             raise StopPropagation(state)
+
         self.on(self.MOUSE_EVENT, disable_mouse)
         self.on(self.KEY_EVENT, receive_key)
         return state
@@ -195,7 +268,11 @@ class Display(object):
         finally:
             self.close()
         if curses_err:
-            print("Curses returned error, so probably your terminal does not support curses or the width/height of your terminal is not suficient to the game run..Please, fix that!")
-            print("Original Curses error: %s"%curses_err)
+            print(
+                "Curses returned error, so probably your terminal does not " +
+                "support curses or the width/height of your terminal is not " +
+                "suficient to the game run..Please, fix that!"
+            )
+            print("Original Curses error: %s" % curses_err)
 
         return state
