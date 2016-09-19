@@ -107,7 +107,6 @@ class Sequence(BaseSequence):
         """
         return self.count_blocked(state, n) == 2
 
-
     def count_blocked(self, state, n=None):
         if n is None:
             n = WINNING_CONDITION-len(self)

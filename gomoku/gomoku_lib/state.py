@@ -41,7 +41,8 @@ class State(BaseState):
         """
         Retorna se o jogo ja terminou
         """
-        return self.won() or self.move_count == BOARD_WIDTH * BOARD_HEIGHT
+        return self.check_won() or \
+            self.move_count == BOARD_WIDTH * BOARD_HEIGHT
 
     def is_valid_position(self, y, x):
         return y >= 0 and x >= 0 and y < BOARD_HEIGHT and x < BOARD_WIDTH

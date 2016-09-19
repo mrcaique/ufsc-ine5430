@@ -213,11 +213,11 @@ class Display(object):
             elif ev == 'V':
                 self.computer_player = 'OX'
                 self.on(self.MOUSE_EVENT, disable_mouse_forever)
-                state = self.trigger(self.IA_MOVE, state)
                 state = state.display(
                     "You entered the AI vs. AI mode. " +
                     "Sit down and let the computer battle against itself. :)"
                 )
+                state = self.trigger(self.IA_MOVE, state)
             elif ev == 'X':
                 self.computer_player = 'O'
                 state = self.trigger(self.IA_MOVE, state)

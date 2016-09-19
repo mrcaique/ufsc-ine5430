@@ -21,14 +21,22 @@ def finish(display, state, *args, **kwargs):
 
 
 def check_won(display, state, y, x):
+    finished = state.finished()
     won = state.won(y, x)
-    if won:
+    if finished and won:
         # Detect the player who won...
-        won = state.max_sequence(y, x).player
-        state = state.display("The player {} won".format(won))
+        winner = state.max_sequence(y, x).player
+        feeling = "_o_"
+        if winner in display.computer_player:
+            feeling = "\o/"
+        state = state.display("The player {} won {}".format(winner, feeling))
         display.off(display.MOUSE_EVENT)
         display.once(display.MOUSE_EVENT, finish)
         raise StopPropagation(state)
+    elif finished and not won:
+        state = state.display("No winners :(".format(winner))
+        display.off(display.MOUSE_EVENT)
+        display.once(display.MOUSE_EVENT, finish)
     return state
 
 
