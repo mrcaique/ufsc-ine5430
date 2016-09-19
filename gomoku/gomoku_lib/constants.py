@@ -1,6 +1,10 @@
 # encoding: utf-8
+# Largura do tabuleiro
 BOARD_WIDTH = 15
+# Altura do tabuleiro
 BOARD_HEIGHT = 15
+# Numero minimo de pecas em sequencia para ser considerado uma vitoria
+WINNING_CONDITION = 5
 
 ALL_DIRECTIONS = (lambda y, x, n: [y, x - n],  # Esquerda
                   lambda y, x, n: [y, x + n],  # Direita

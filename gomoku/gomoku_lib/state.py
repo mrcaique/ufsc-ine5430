@@ -4,7 +4,7 @@ import copy
 import time
 from .sequences import Sequences
 from .sequence import Sequence
-from .constants import BOARD_WIDTH, BOARD_HEIGHT
+from .constants import BOARD_WIDTH, BOARD_HEIGHT, WINNING_CONDITION
 from .move import Move
 from .exceptions import AlreadyMarked
 
@@ -106,7 +106,7 @@ class State(BaseState):
         tabuleiro
         """
         seq = self.max_sequence(py, px, player)
-        return len(seq) >= 5
+        return len(seq) >= WINNING_CONDITION
 
     def count_sequences(self, length, player=None):
         """
@@ -126,7 +126,7 @@ class State(BaseState):
         Checa se ha uma sequencia vencedora partindo de cada ponto do tabuleiro
         """
         seq = self.check_max_sequence(player)
-        return len(seq) >= 5
+        return len(seq) >= WINNING_CONDITION
 
     def check_max_sequence(self, player=None):
         """

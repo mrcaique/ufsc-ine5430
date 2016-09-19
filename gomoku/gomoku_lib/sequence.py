@@ -1,6 +1,6 @@
 # encoding: utf-8
 import collections
-from .constants import ALL_DIRECTIONS
+from .constants import ALL_DIRECTIONS, WINNING_CONDITION
 BaseSequence = collections.namedtuple("BaseSequence", ["moves", "directions"])
 
 
@@ -69,12 +69,14 @@ class Sequence(BaseSequence):
             sequence = seq
         return sequence
 
-    def is_top_blocked(self, state, n):
+    def is_top_blocked(self, state, n=None):
+        if n is None:
+            n = WINNING_CONDITION-len(self)
         bottom = self.moves[0]
         top = self.moves[-1]
         top_move = self.directions[-1]
         player = self.player
-        for i in range(n):
+        for _ in range(n):
             top = top.apply_direction(top_move)
             if not state.is_valid_position(top.y, top.x):
                 return True
@@ -83,11 +85,13 @@ class Sequence(BaseSequence):
                 return True
         return False
 
-    def is_bottom_blocked(self, state, n):
+    def is_bottom_blocked(self, state, n=None):
+        if n is None:
+            n = WINNING_CONDITION-len(self)
         bottom = self.moves[0]
         bottom_move = self.directions[0]
         player = self.player
-        for i in range(n):
+        for _ in range(n):
             bottom = bottom.apply_direction(bottom_move)
             if not state.is_valid_position(bottom.y, bottom.x):
                 return True
@@ -96,13 +100,23 @@ class Sequence(BaseSequence):
                 return True
         return False
 
-    def is_blocked(self, state, n):
+    def is_blocked(self, state, n=None):
         """
         Retorna verdadeiro se este jogo estiver bloqueado em n casas na direcao
         proposta
         """
-        return self.is_top_blocked(state, n) and \
-            self.is_bottom_blocked(state, n)
+        return self.count_blocked(state, n) == 2
+
+
+    def count_blocked(self, state, n=None):
+        if n is None:
+            n = WINNING_CONDITION-len(self)
+        result = 0
+        if self.is_top_blocked(state, n):
+            result += 1
+        if self.is_bottom_blocked(state, n):
+            result += 1
+        return result
 
     def append(self, move):
         if move.player != self.player or move in self.moves:
