@@ -69,26 +69,40 @@ class Sequence(BaseSequence):
             sequence = seq
         return sequence
 
-    def is_blocked(self, state, n):
-        """
-        Retorna verdadeiro se este jogo estiver bloqueado em n casas na direcao
-        proposta
-        """
+    def is_top_blocked(self, state, n):
         bottom = self.moves[0]
         top = self.moves[-1]
-        bottom_move = self.directions[0]
         top_move = self.directions[-1]
         player = self.player
         for i in range(n):
-            bottom = bottom.apply_direction(bottom_move)
             top = top.apply_direction(top_move)
-            if state.is_marked(bottom.y, bottom.x) and not \
-                    state.is_marked_by(bottom.y, bottom.x, player):
+            if not state.is_valid_position(top.y, top.x):
                 return True
             if state.is_marked(top.y, top.x) and not \
                     state.is_marked_by(top.y, top.x, player):
                 return True
         return False
+
+    def is_bottom_blocked(self, state, n):
+        bottom = self.moves[0]
+        bottom_move = self.directions[0]
+        player = self.player
+        for i in range(n):
+            bottom = bottom.apply_direction(bottom_move)
+            if not state.is_valid_position(bottom.y, bottom.x):
+                return True
+            if state.is_marked(bottom.y, bottom.x) and not \
+                    state.is_marked_by(bottom.y, bottom.x, player):
+                return True
+        return False
+
+    def is_blocked(self, state, n):
+        """
+        Retorna verdadeiro se este jogo estiver bloqueado em n casas na direcao
+        proposta
+        """
+        return self.is_top_blocked(state, n) and \
+            self.is_bottom_blocked(state, n)
 
     def append(self, move):
         if move.player != self.player or move in self.moves:

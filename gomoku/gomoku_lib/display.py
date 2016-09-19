@@ -223,14 +223,14 @@ class Display(object):
                 state = self.trigger(self.IA_MOVE, state)
                 state = state.display(
                     ("You selected the player %s\n" +
-                     "Tip: You can undo your movements pressing the button U " +
-                     "in your keyboard") % ev)
+                     "Tip: You can undo your movements pressing the button "
+                     "U in your keyboard") % ev)
             else:
                 self.computer_player = 'X'
                 state = state.display(
                     ("You selected the player %s\n" +
-                     "Tip: You can undo your movements pressing the button U " +
-                     "in your keyboard") % ev)
+                     "Tip: You can undo your movements pressing the button " +
+                     "U in your keyboard") % ev)
             raise StopPropagation(state)
 
         self.on(self.MOUSE_EVENT, disable_mouse)
