@@ -3,6 +3,8 @@ from gomoku_lib.display import Display
 from gomoku_lib.state import State
 from gomoku_lib.events import Mouse
 from gomoku_lib.exceptions import StopPropagation, Quit
+from gomoku_lib.minimax import minimax
+from math import inf
 
 __all__ = ["Display", "State"]
 
@@ -41,16 +43,7 @@ def check_won(display, state, y, x):
 
 
 def run_ai(display, state, *args, **kwargs):
-    i = state.get_next_states()
-    a = []
-    if state.parent.last_move is not None:
-        a.append(
-            lambda s: 1000 * len(s.check_max_sequence(state.get_next_player()))
-        )
-    a.append(
-        lambda s: -1000 * len(s.check_max_sequence(display.computer_player))
-    )
-    s = min(i, key=lambda s: [c(s) for c in a])
+    _, s = minimax(state, 2, -inf, inf, True)
     return display.trigger(display.MARK_EVENT, s, s.last_move.y, s.last_move.x)
 
 
