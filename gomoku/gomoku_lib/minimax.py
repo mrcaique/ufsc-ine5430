@@ -1,15 +1,18 @@
 from .heuristic import evaluate
 
+
 def minimax(state, depth, alpha, beta, is_player):
-    next_states = list(state.get_next_states())
+    finished = object()
+    next_states = state.get_next_states()
 
     best_state = None
+    next_state = next(next_states, finished)
 
-    if depth == 0 or not next_states:
+    if depth == 0 or next_state is finished:
         value = evaluate(state)
-        return value, best_state
+        return value, state
     else:
-        for next_state in next_states:
+        while next_state is not finished:
             if is_player:
                 value, _ = minimax(next_state, depth - 1, alpha, beta, False)
                 if value > alpha:
@@ -22,8 +25,8 @@ def minimax(state, depth, alpha, beta, is_player):
                     best_state = next_state
             if alpha >= beta:
                 break
+            next_state = next(next_states, finished)
     if is_player:
         return alpha, best_state
     else:
         return beta, best_state
-

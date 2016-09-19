@@ -4,10 +4,9 @@ from gomoku_lib.state import State
 from gomoku_lib.events import Mouse
 from gomoku_lib.exceptions import StopPropagation, Quit
 from gomoku_lib.minimax import minimax
-from math import inf
 
 __all__ = ["Display", "State"]
-
+inf = float('inf')
 
 def process_mouse_click(display, state, ev):
     if not ev.match(Mouse.LEFT_CLICKED):
@@ -36,7 +35,7 @@ def check_won(display, state, y, x):
         display.once(display.MOUSE_EVENT, finish)
         raise StopPropagation(state)
     elif finished and not won:
-        state = state.display("No winners :(".format(winner))
+        state = state.display("No winners :(")
         display.off(display.MOUSE_EVENT)
         display.once(display.MOUSE_EVENT, finish)
     return state
@@ -51,7 +50,7 @@ def should_ai_run(display, state, y, x):
     if state.player in display.computer_player:
         # Update the screen so the user sees the click instantly..
         display.draw(state)
-        return display.trigger(display.IA_MOVE, state)
+        display.trigger_delay(display.IA_MOVE)
     return state
 
 
@@ -66,6 +65,10 @@ def undo(display, state, ev, *args, **kwargs):
         return p
     return state
 
+def clear_message(display, state, ev, *args, **kwargs):
+    if not ev.match(Mouse.LEFT_CLICKED) or not state.message:
+        return state
+    return state.display(None)
 
 if __name__ == "__main__":
     state = State.get_initial_state()
@@ -75,4 +78,5 @@ if __name__ == "__main__":
     display.on(display.MARK_EVENT, check_won)
     display.on(display.KEY_EVENT, undo)
     display.on(display.IA_MOVE, run_ai)
+    display.on(display.MOUSE_EVENT, clear_message)
     display.loop(state)

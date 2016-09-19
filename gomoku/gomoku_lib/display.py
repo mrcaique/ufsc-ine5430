@@ -8,7 +8,9 @@ from .exceptions import Quit, GameWarning, StopPropagation, InvalidLocation
 
 
 class Display(object):
-    __slots__ = ["window", "handlers", "has_colors", "computer_player"]
+    __slots__ = [
+        "window", "handlers", "has_colors", "computer_player"
+    ]
 
     MOUSE_EVENT = object()
     KEY_EVENT = object()
@@ -28,6 +30,7 @@ class Display(object):
         curses.mousemask(1)
         self.window.keypad(1)
         curses.curs_set(0)
+        self.window.timeout(100)
         self.has_colors = curses.can_change_color()
         if self.has_colors:
             curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_YELLOW)
@@ -94,7 +97,18 @@ class Display(object):
             self.window.addstr((height // 2) - ((lines_count // 2)) + i, width,
                                line)
 
-    def display_status(self, message):
+    def display_status(self, state):
+        dif = time.time() - state.started_at
+        dif_type = "seconds"
+        if dif > 60:
+            dif /= 60.0
+            dif_type = "minutes"
+        if dif > 60:
+            dif /= 60.0
+            dif_type = "hours"
+        message = "Pieces in board %d\n" % state.move_count
+        message += "Actual player: %s\n" % (state.player)
+        message += "Playing for: %.2f %s" % (dif, dif_type)
         width = self.get_width()
         lines = self.format(message)
         lines_count = len(lines)
@@ -127,17 +141,7 @@ class Display(object):
                     self.window.addch(y, x, ord(char))
         if state.message:
             self.display_message(state.message)
-        dif = time.time() - state.started_at
-        dif_type = "seconds"
-        if dif > 60:
-            dif /= 60.0
-            dif_type = "minutes"
-        if dif > 60:
-            dif /= 60.0
-            dif_type = "hours"
-        self.display_status(
-            "Pieces in board %d\nActual player: %s\nPlaying for: %.2f %s" %
-            (state.move_count, state.player, dif, dif_type))
+        self.display_status(state)
         self.window.refresh()
 
     def on(self, event, fn):
@@ -166,19 +170,24 @@ class Display(object):
                 break
         return state
 
+    def trigger_delay(self, event, *args, **kwargs):
+        def dispatch(display, state, *args, **kwargs):
+            return display.trigger(event, state, *args, **kwargs)
+        self.once(self.POSDRAW_EVENT, dispatch)
+
     def select_player(self, state):
         state = state.display(
             "Enter the player you want: \n" +
             "- X \n" +
             "- O \n" +
-            "- V (let the AI play against itself)\n " +
+            "- V (let the AI play against itself)\n" +
             "- M (let you play against yourself (?))\n" +
             "(press the key in your keyboard)"
         )
 
         def disable_mouse(_, state, ev, *args, **kwargs):
             state = state.display(
-                "Enter the player you want: \n " +
+                "Enter the player you want: \n" +
                 "- X \n" +
                 "- O \n" +
                 "- V (let the AI play against itself)\n" +
@@ -187,7 +196,7 @@ class Display(object):
             )
             raise StopPropagation(state)
 
-        def disable_mouse_forever(_, state):
+        def disable_mouse_forever(_, state, *args, **kwargs):
             state = state.display("Let the AI play against itself! \o/")
             raise StopPropagation(state)
 
@@ -252,15 +261,16 @@ class Display(object):
                 elif ev == curses.KEY_MOUSE:
                     args.append(Mouse.get_current())
                     ev = self.MOUSE_EVENT
-                try:
-                    state = self.trigger(ev, state, *args)
-                except GameWarning as e:
-                    state = state.display(str(e))
+                else:
+                    ev = None
+                if ev:
+                    try:
+                        state = self.trigger(ev, state, *args)
+                    except GameWarning as e:
+                        state = state.display(str(e))
                 state = self.trigger(self.PREDRAW_EVENT, state)
                 self.draw(state)
                 state = self.trigger(self.POSDRAW_EVENT, state)
-                if state.message:
-                    state = state.display(None)
         except (KeyboardInterrupt, Quit):
             pass
         except curses.error as e:
