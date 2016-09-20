@@ -95,7 +95,9 @@ class Sequence(BaseSequence):
         sequences = sequences.get_by_player(self.player)
         for _ in range(n):
             top = top.apply_direction(top_move)
-            if len(sequences.get_by_position(top.y, top.x)) > 0:
+            seq = sequences.get_by_position(top.y, top.x)
+            seq = [s for s in seq if s.directions == self.directions]
+            if len(seq) > 0:
                 return True
         return False
 
@@ -109,8 +111,10 @@ class Sequence(BaseSequence):
         sequences = state.get_sequences()
         sequences = sequences.get_by_player(self.player)
         for _ in range(n):
-            bottom = bottom.apply_direction(top_move)
-            if len(sequences.get_by_position(bottom.y, bottom.x)) > 0:
+            bottom = bottom.apply_direction(bottom_move)
+            seq = sequences.get_by_position(bottom.y, bottom.x)
+            seq = [s for s in seq if s.directions == self.directions]
+            if len(seq) > 0:
                 return True
         return False
 
