@@ -33,6 +33,37 @@ class Sequences(BaseSequences):
         )
         return Sequences(sequences=tuple(sequences), board=None)
 
+    def get_by_not_blocked(self, state, n=None):
+        """
+        Retorna um iterator que contem apenas sequencias que nao estao
+        bloqueadas numa margem de ate "n" passos
+        """
+        sequences = (
+            seq for seq in self if not seq.is_blocked(state, n)
+        )
+        return Sequences(sequences=tuple(sequences), board=None)
+
+    def get_by_blocked(self, state, n=None):
+        """
+        Retorna um iterator que contem apenas sequencias que estao
+        bloqueadas numa margem de ate "n" passos
+        """
+        sequences = (
+            seq for seq in self if seq.is_blocked(state, n)
+        )
+        return Sequences(sequences=tuple(sequences), board=None)
+
+
+    def get_by_sides_blocked(self, state, sides, n=None):
+        """
+        Retorna um iterator que contem apenas sequencias que tem "sides" lados
+        bloqueados numa margem de ate "n" passos
+        """
+        sequences = (
+            seq for seq in self if seq.count_blocked(state, n) == sides
+        )
+        return Sequences(sequences=tuple(sequences), board=None)
+
     def get_by_player(self, player):
         """
         Retorna um iterator que contem apenas as sequencias de um determinado
