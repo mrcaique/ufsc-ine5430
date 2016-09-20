@@ -13,7 +13,7 @@ def process_mouse_click(display, state, ev):
         return state
     y, x = display.locate(ev.y, ev.x)
     state = state.mark(y, x)
-    return display.trigger(display.MARK_EVENT, state, y=y, x=x)
+    return display.trigger(display.MARK_EVENT, state)
 
 
 def finish(display, state, *args, **kwargs):
@@ -21,12 +21,12 @@ def finish(display, state, *args, **kwargs):
     return state
 
 
-def check_won(display, state, y, x):
+def check_won(display, state):
     finished = state.finished()
-    won = state.won(y, x)
+    won = state.check_won()
     if finished and won:
         # Detect the player who won...
-        winner = state.max_sequence(y, x).player
+        winner = state.check_max_sequence().player
         feeling = "_o_"
         if winner in display.computer_player:
             feeling = "\o/"
@@ -42,11 +42,12 @@ def check_won(display, state, y, x):
 
 
 def run_ai(display, state, *args, **kwargs):
-    _, s = minimax(state, 2, -inf, inf, True)
-    return display.trigger(display.MARK_EVENT, s, s.last_move.y, s.last_move.x)
+    value, s = minimax(state, 2, -inf, inf, True)
+    s = s.display(str(value))
+    return display.trigger(display.MARK_EVENT, s)
 
 
-def should_ai_run(display, state, y, x):
+def should_ai_run(display, state, *args, **kwargs):
     if state.player in display.computer_player:
         # Update the screen so the user sees the click instantly..
         display.draw(state)
