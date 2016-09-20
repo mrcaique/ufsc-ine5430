@@ -118,7 +118,7 @@ class Display(object):
     def draw(self, state):
         width = self.get_width()
         height = self.get_height()
-        self.window.clear()
+        self.window.erase()
         for x in range(width):
             for y in range(height):
                 char = self.get_char(y, x, state)
