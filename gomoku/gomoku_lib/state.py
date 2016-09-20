@@ -141,6 +141,8 @@ class State(BaseState):
         return max(sequences, key=len)
 
     def get_next_states(self):
+        if self.finished():
+            return
         for y in range(BOARD_HEIGHT):
             for x in range(BOARD_WIDTH):
                 if self.is_marked(y, x):
