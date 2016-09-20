@@ -226,14 +226,15 @@ class Display(object):
                     "You entered the AI vs. AI mode. " +
                     "Sit down and let the computer battle against itself. :)"
                 )
-                state = self.trigger(self.IA_MOVE, state)
+                self.trigger_delay(self.IA_MOVE, state)
             elif ev == 'X':
                 self.computer_player = 'O'
-                state = self.trigger(self.IA_MOVE, state)
+
                 state = state.display(
                     ("You selected the player %s\n" +
                      "Tip: You can undo your movements pressing the button "
                      "U in your keyboard") % ev)
+                self.trigger_delay(self.IA_MOVE, state)
             else:
                 self.computer_player = 'X'
                 state = state.display(
