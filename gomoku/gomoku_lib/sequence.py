@@ -72,7 +72,6 @@ class Sequence(BaseSequence):
     def is_top_blocked(self, state, n=None):
         if n is None:
             n = WINNING_CONDITION-len(self)
-        bottom = self.moves[0]
         top = self.moves[-1]
         top_move = self.directions[-1]
         player = self.player
@@ -84,6 +83,49 @@ class Sequence(BaseSequence):
                     state.is_marked_by(top.y, top.x, player):
                 return True
         return False
+
+    def is_top_near_merge(self, state, n=None):
+        if n is None:
+            n = WINNING_CONDITION-len(self)
+        top = self.moves[-1]
+        top_move = self.directions[-1]
+        player = self.player
+        top = top.apply_direction(top_move)
+        sequences = state.get_sequences()
+        sequences = sequences.get_by_player(self.player)
+        for _ in range(n):
+            top = top.apply_direction(top_move)
+            if len(sequences.get_by_position(top.y, top.x)) > 0:
+                return True
+        return False
+
+    def is_bottom_near_merge(self, state, n=None):
+        if n is None:
+            n = WINNING_CONDITION-len(self)
+        bottom = self.moves[0]
+        bottom_move = self.directions[0]
+        player = self.player
+        bottom = bottom.apply_direction(bottom_move)
+        sequences = state.get_sequences()
+        sequences = sequences.get_by_player(self.player)
+        for _ in range(n):
+            bottom = bottom.apply_direction(top_move)
+            if len(sequences.get_by_position(bottom.y, bottom.x)) > 0:
+                return True
+        return False
+
+    def count_near_merge(self, state, n=None):
+        if n is None:
+            n = WINNING_CONDITION-len(self)
+        result = 0
+        if self.is_top_near_merge(state, n):
+            result += 1
+        if self.is_bottom_near_merge(state, n):
+            result += 1
+        return result
+
+    def is_near_merge(self, state, n=None):
+        return self.count_near_merge(state, n) == 2
 
     def is_bottom_blocked(self, state, n=None):
         if n is None:

@@ -10,10 +10,13 @@ BaseSequences = collections.namedtuple("BaseSequences", ["sequences", "board"])
 class Sequences(BaseSequences):
     @classmethod
     def get_initial_sequences(cls):
-        return cls(sequences=tuple(),
-                   board=tuple(
-                       tuple(tuple() for _ in range(BOARD_WIDTH))
-                       for _ in range(BOARD_HEIGHT)))
+        return cls(
+            sequences=tuple(),
+            board=tuple(
+               tuple(tuple() for _ in range(BOARD_WIDTH))
+               for _ in range(BOARD_HEIGHT)
+            )
+        )
 
     def __iter__(self):
         return iter(self.sequences)
@@ -33,26 +36,15 @@ class Sequences(BaseSequences):
         )
         return Sequences(sequences=tuple(sequences), board=None)
 
-    def get_by_not_blocked(self, state, n=None):
+    def get_by_near_merge(self, state, sides, n=None):
         """
-        Retorna um iterator que contem apenas sequencias que nao estao
-        bloqueadas numa margem de ate "n" passos
-        """
-        sequences = (
-            seq for seq in self if not seq.is_blocked(state, n)
-        )
-        return Sequences(sequences=tuple(sequences), board=None)
-
-    def get_by_blocked(self, state, n=None):
-        """
-        Retorna um iterator que contem apenas sequencias que estao
-        bloqueadas numa margem de ate "n" passos
+        Retorna um iterator que  podem fazer merges em ate "sides" lados, a "n"
+        passos de distancia
         """
         sequences = (
-            seq for seq in self if seq.is_blocked(state, n)
+            seq for seq in self if seq.count_near_merge(state, n) == sides
         )
         return Sequences(sequences=tuple(sequences), board=None)
-
 
     def get_by_sides_blocked(self, state, sides, n=None):
         """
