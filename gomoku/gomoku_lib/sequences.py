@@ -1,6 +1,6 @@
 # encoding: utf-8
 import collections
-import itertools
+import copy
 from .constants import BOARD_WIDTH, BOARD_HEIGHT
 from .sequence import Sequence
 
@@ -77,6 +77,7 @@ class Sequences(BaseSequences):
         if self.board is None:
             raise TypeError("Cannot append to a filtered Sequences object")
         sequences = list(self.sequences)
+        # board = copy.copy(self.board)
         board = list(self.board)
         local_sequences = list(board[move.y][move.x])
         new_local_sequences = []
@@ -132,6 +133,7 @@ class Sequences(BaseSequences):
             if sequence in new_local_sequences:
                 continue
             sequences.append(sequence)
+            new_local_sequences.append(sequence)
             for end in sequence.ends():
                 if not state.is_valid_position(end.y, end.x):
                     continue
@@ -142,18 +144,19 @@ class Sequences(BaseSequences):
                 board[y][x] = tuple(board[y][x])
                 board[y] = tuple(board[y])
         # Here, we filter possible sequences that can be merged with the move..
-        seq_groups = (list(seq_group)
-                      for _, seq_group in itertools.groupby(
-                          new_local_sequences, lambda seq: seq.directions))
+        seq_groups = {}
+        for seq in new_local_sequences:
+            # Group the sequences by directions :D
+            seq_groups.setdefault(seq.directions, []).append(seq)
+        seq_groups = seq_groups.values()
         # Well..if we want merges, we need to have more than a sequence in the
         # group..(grouped by directions)
-        seq_groups = (seq_group for seq_group in seq_groups
-                      if len(seq_group) > 1)
+        seq_groups = [seq_group for seq_group in seq_groups
+                      if len(seq_group) > 1]
         for seq_group in seq_groups:
             merged = None
             seq = None
             while seq_group:
-                merged = seq
                 seq = seq_group.pop()
                 # Remove the old sequence that will be added to the merge from
                 # the sequences list
@@ -177,9 +180,14 @@ class Sequences(BaseSequences):
                     board[y][x] = tuple(board[y][x])
                     board[y] = tuple(board[y])
                 if merged is None:
+                    merged = seq
                     continue
                 # Merge the sequence \o/
-                merged = merged.merge(seq)
+                new_merged = merged.merge(seq)
+                assert new_merged != merged, \
+                    ("{} when merged with {} should change, but it does not " +
+                     "caused it to..".format(merged, seq))
+                merged = new_merged
             if merged is not None:
                 # Add the merged sequence to the sequences list...
                 sequences.append(merged)

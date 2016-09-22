@@ -108,7 +108,9 @@ class Display(object):
             dif_type = "hours"
         message = "Pieces in board %d\n" % state.move_count
         message += "Actual player: %s\n" % (state.player)
+        message += "Max Sequence: %d \n" % (len(state.check_max_sequence()))
         message += "Playing for: %.2f %s" % (dif, dif_type)
+        
         width = self.get_width()
         lines = self.format(message)
         lines_count = len(lines)

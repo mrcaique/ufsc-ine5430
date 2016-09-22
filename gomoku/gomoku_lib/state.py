@@ -70,8 +70,8 @@ class State(BaseState):
             raise AlreadyMarked(y, x)
         if y >= BOARD_HEIGHT or y < 0 or x >= BOARD_WIDTH or x < 0:
             raise InvalidLocation(y, x)
-        board = copy.copy(self.board)
-        board = list(board)
+        #board = copy.copy(self.board)
+        board = list(self.board)
         board[y] = list(board[y])
         board[y][x] = self.player
         board[y] = tuple(board[y])
@@ -143,8 +143,53 @@ class State(BaseState):
     def get_next_states(self):
         if self.finished():
             return
-        for y in range(BOARD_HEIGHT):
-            for x in range(BOARD_WIDTH):
-                if self.is_marked(y, x):
-                    continue
-                yield self.mark(y, x)
+        moves = []
+        sequences = self.sequences
+        sequences = sorted(sequences, key=lambda seq: len, reverse=True)
+        if sequences and len(sequences[0]) >= len(sequences[-1]) and len(sequences[-1]) == 1:
+            sequences = [seq for seq in sequences if len(seq) > 1]
+        for sequence in sequences: 
+            moves.extend((move.y, move.x) for move in sequence.ends() if (move.y, move.x) not in moves and self.is_valid_position(move.y, move.x))
+        if not moves:
+           moves.append((int(BOARD_HEIGHT/2), int(BOARD_WIDTH/2)))
+        # moves = moves[:10]
+        d = [-1, 0, 1]
+        visited = []
+        # We scan the possible movements first..:)
+        for move in moves:
+            xn = int(move[1])
+            yn = int(move[0])
+            if self.is_marked(yn, xn) or \
+                not self.is_valid_position(yn, xn) or \
+                (yn, xn) in visited:
+                continue
+            visited.append((yn, xn))
+            yield self.mark(yn, xn)
+        # And after scanning the possible movements we scan the neighborhood :)
+        for move in moves:
+            for v in d:
+                for h in d:
+                    yn = int(move[0]+v)
+                    xn = int(move[1]+h)
+                    if not self.is_valid_position(yn, xn)  or \
+                        self.is_marked(yn, xn) or \
+                        (yn, xn) in visited:
+                        continue
+                    visited.append((yn, xn))
+                    yield self.mark(yn, xn)
+            # for y in range(1, 3):
+            #     for v in d:
+            #         yn = int(move[0]+(y*v))
+            #         if not self.is_valid_position(yn, 0):
+            #             # If out of bound vertically, we let the program jump
+            #             # All the x range...
+            #             continue
+            #         for x in range(1, 3):
+            #             for h in d:
+            #                 xn = int(move[1]+(x*h))
+            #                 if not self.is_valid_position(yn, xn)  or \
+            #                     self.is_marked(yn, xn) or \
+            #                     (yn, xn) in visited:
+            #                     continue
+            #                 visited.append((yn, xn))
+            #                 yield self.mark(yn, xn)

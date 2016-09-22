@@ -87,34 +87,36 @@ class Sequence(BaseSequence):
     def is_top_near_merge(self, state, n=None):
         if n is None:
             n = WINNING_CONDITION-len(self)
+        if self.is_top_blocked(state, n):
+            return False
         top = self.moves[-1]
         top_move = self.directions[-1]
         player = self.player
-        top = top.apply_direction(top_move)
         sequences = state.get_sequences()
         sequences = sequences.get_by_player(self.player)
         for _ in range(n):
             top = top.apply_direction(top_move)
             seq = sequences.get_by_position(top.y, top.x)
-            seq = [s for s in seq if s.directions == self.directions]
-            if len(seq) > 0:
+            seq = any(s.directions <= self.directions for s in seq)
+            if seq:
                 return True
         return False
 
     def is_bottom_near_merge(self, state, n=None):
         if n is None:
             n = WINNING_CONDITION-len(self)
+        if self.is_bottom_blocked(state, n):
+            return False
         bottom = self.moves[0]
         bottom_move = self.directions[0]
         player = self.player
-        bottom = bottom.apply_direction(bottom_move)
         sequences = state.get_sequences()
         sequences = sequences.get_by_player(self.player)
         for _ in range(n):
             bottom = bottom.apply_direction(bottom_move)
             seq = sequences.get_by_position(bottom.y, bottom.x)
-            seq = [s for s in seq if s.directions == self.directions]
-            if len(seq) > 0:
+            seq = any(s.directions <= self.directions for s in seq)
+            if seq:
                 return True
         return False
 

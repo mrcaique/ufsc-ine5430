@@ -24,31 +24,31 @@ def finish(display, state, *args, **kwargs):
 def check_won(display, state):
     finished = state.finished()
     won = state.check_won()
-    if finished and won:
-        # Detect the player who won...
-        winner = state.check_max_sequence().player
-        feeling = "_o_"
-        if winner in display.computer_player:
-            feeling = "\o/"
-        state = state.display("The player {} won {}".format(winner, feeling))
+    if finished:
+        if won:
+            # Detect the player who won...
+            winner = state.check_max_sequence().player
+            feeling = "_o_"
+            if winner in display.computer_player:
+                feeling = "\o/"
+            state = state.display("The player {} won {}".format(winner, feeling))
+        else:
+            state = state.display("No winners :(")
+        display.off(display.IA_MOVE)
+        display.off(display.MARK_EVENT)
         display.off(display.MOUSE_EVENT)
         display.once(display.MOUSE_EVENT, finish)
         raise StopPropagation(state)
-    elif finished and not won:
-        state = state.display("No winners :(")
-        display.off(display.MOUSE_EVENT)
-        display.once(display.MOUSE_EVENT, finish)
     return state
 
 
 def run_ai(display, state, *args, **kwargs):
-    value, s = minimax(state, 2, -inf, inf, True)
-    s = s.display(str(value))
+    value, s = minimax(state.player, state, 2, -inf, inf, True)
     return display.trigger(display.MARK_EVENT, s)
 
 
 def should_ai_run(display, state, *args, **kwargs):
-    if state.player in display.computer_player:
+    if state.player in display.computer_player and not state.finished():
         # Update the screen so the user sees the click instantly..
         display.draw(state)
         display.trigger_delay(display.IA_MOVE)

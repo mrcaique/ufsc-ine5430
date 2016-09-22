@@ -1,88 +1,49 @@
-def evaluate_full_sequence(state, computer, player):
-    result = 0
-    if player is not None:
-        seq = player.get_by_length(5)
-        if len(seq):
-            return -1000
-        seq = player.get_by_length(4)
-        if len(seq):
-            free = len(seq.get_by_sides_blocked(state, 0))
-            if free:
-                return -5000
-            half_blocked = len(seq.get_by_sides_blocked(state, 1))
-            if half_blocked:
-                result += 5000*half_blocked
-        seq = player.get_by_length(3)
-        if len(seq):
-            free = len(seq.get_by_sides_blocked(state, 0))
-            free *= (len(seq.get_by_near_merge(state, 2))+1)
-            free *= (len(seq.get_by_near_merge(state, 1))+1)
-            if free:
-                result -= 2500*free
-            half_blocked = len(seq.get_by_sides_blocked(state, 1))
-            if half_blocked:
-                result += 1000*half_blocked
-        seq = player.get_by_length(2)
-        if len(seq):
-            free = len(seq.get_by_sides_blocked(state, 0))
-            free *= (len(seq.get_by_near_merge(state, 2))+1)
-            free *= (len(seq.get_by_near_merge(state, 1))+1)
-            if free:
-                result -= 500*free
-            half_blocked = len(seq.get_by_sides_blocked(state, 1))
-            if half_blocked:
-                result += 250*half_blocked
-    seq = computer.get_by_length(5)
-    if len(seq):
-        return 10000*len(seq)
-    seq = computer.get_by_length(4)
-    if len(seq):
-        free = len(seq.get_by_sides_blocked(state, 0))
-        free *= (len(seq.get_by_near_merge(state, 2))+1)
-        free *= (len(seq.get_by_near_merge(state, 1))+1)
-        if free:
-            result += 10000*free
-        half_blocked = len(seq.get_by_sides_blocked(state, 1))
-        if half_blocked:
-            result -= 500*half_blocked
-    seq = computer.get_by_length(3)
-    if len(seq):
-        free = len(seq.get_by_sides_blocked(state, 0))
-        free *= (len(seq.get_by_near_merge(state, 2))+1)
-        free *= (len(seq.get_by_near_merge(state, 1))+1)
-        if free:
-            result += 250*free
-        half_blocked = len(seq.get_by_sides_blocked(state, 1))
-        if half_blocked:
-            result -= 100*half_blocked
-    seq = computer.get_by_length(2)
-    if len(seq):
-        free = seq.get_by_sides_blocked(state, 0)
-        free *= (len(seq.get_by_near_merge(state, 2))+1)
-        free *= (len(seq.get_by_near_merge(state, 1))+1)
-        if len(free):
-            result += 10*len(free)
-        half_blocked = len(seq.get_by_sides_blocked(state, 1))
-        if half_blocked:
-            result -= 5*half_blocked
-    seq = computer.get_by_length(1)
-    if len(seq):
-        free = len(seq.get_by_sides_blocked(state, 0))
-        if free:
-            result += free*2
-        half_blocked = len(seq.get_by_sides_blocked(state, 1))
-        if half_blocked:
-            result -= half_blocked*2
-    return result
+def evaluate_sequence_length(sequence):
+    l = len(sequence)
+    if l >= 5:
+        return 1e8
+    if l == 4:
+        return 1e5 
+    if l == 3:
+        return 1e3
+    if l == 2:
+        return 1e2 
+    return 1e1
 
-def evaluate_player(state):
-    result = 0
-    return result
+def evaluate_sequence_blocking(state, sequence):
+    sides_blocked = sequence.count_blocked(state)
+    l = len(sequence)
+    if sides_blocked == 2:
+        return -2
+    elif sides_blocked == 1:
+        return -4
+    elif sides_blocked == 0:
+        return 16
 
-def evaluate(state):
+def evaluate_sequence_merging(state, sequence):
+    l = len(sequence)
+    sides_merged = sequence.count_near_merge(state)
+    if sides_merged == 2:
+        return 8
+    elif sides_merged == 1:
+        return 4
+    elif sides_merged == 0:
+        return 2
+    
+def evaluate_sequence(state, sequences, sequence):
+    return (evaluate_sequence_length(sequence)*evaluate_sequence_blocking(state, sequence))*evaluate_sequence_merging(state, sequence)
+
+def evaluate(player, state):
     sequences = state.get_sequences()
-    local = sequences.get_by_position(state.last_move.y, state.last_move.x)
-    computer = sequences.get_by_player(state.last_move.player)
-    player = sequences.get_by_player(state.player)
-    result_computer = evaluate_full_sequence(state, player, computer)
-    return result_computer
+    if state.player == player:
+        next_player = state.last_move.player
+    else:
+        next_player = state.player
+    computer = sequences.get_by_player(player)
+    player = sequences.get_by_player(next_player)
+    cresult = sum(evaluate_sequence(state, computer, seq) for seq in computer)
+    #cresult = cresult/float(len(computer))
+    cplayer = sum(evaluate_sequence(state, player, seq) for seq in player)
+    #cplayer = cplayer/float(len(player))
+    result = cresult-cplayer
+    return int(result/float(state.move_count))
