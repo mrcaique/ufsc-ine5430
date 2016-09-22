@@ -145,7 +145,7 @@ class State(BaseState):
             return
         moves = []
         sequences = self.sequences
-        sequences = sorted(sequences, key=lambda seq: len, reverse=True)
+        # sequences = sorted(sequences, key=lambda seq: len, reverse=True)
         if sequences and len(sequences[0]) >= len(sequences[-1]) and len(sequences[-1]) == 1:
             sequences = [seq for seq in sequences if len(seq) > 1]
         for sequence in sequences: 

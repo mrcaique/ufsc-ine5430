@@ -97,7 +97,7 @@ class Sequence(BaseSequence):
         for _ in range(n):
             top = top.apply_direction(top_move)
             seq = sequences.get_by_position(top.y, top.x)
-            seq = any(s.directions <= self.directions for s in seq)
+            seq = any(s.directions == self.directions for s in seq)
             if seq:
                 return True
         return False
@@ -115,7 +115,7 @@ class Sequence(BaseSequence):
         for _ in range(n):
             bottom = bottom.apply_direction(bottom_move)
             seq = sequences.get_by_position(bottom.y, bottom.x)
-            seq = any(s.directions <= self.directions for s in seq)
+            seq = any(s.directions == self.directions for s in seq)
             if seq:
                 return True
         return False
