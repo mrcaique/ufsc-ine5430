@@ -18,6 +18,9 @@ class Sequence(BaseSequence):
 
     def __iter__(self):
         return iter(self.moves)
+    
+    def __lt__(self, other):
+        return len(self) < len(other)
 
     def match_start(self, move):
         return self.bottom_end() == move

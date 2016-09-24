@@ -6,6 +6,10 @@ BOARD_HEIGHT = 15
 # Numero minimo de pecas em sequencia para ser considerado uma vitoria
 WINNING_CONDITION = 5
 
+X_PLAYER = "X"
+O_PLAYER = "O"
+EMPTY = "+"
+
 ALL_DIRECTIONS = (lambda y, x, n: [y, x - n],  # Esquerda
                   lambda y, x, n: [y, x + n],  # Direita
                   lambda y, x, n: [y - n, x],  # Superior
