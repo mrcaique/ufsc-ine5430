@@ -1,0 +1,425 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/ontologies/guide#"
+     xml:base="http://www.semanticweb.org/ontologies/guide"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/ontologies/guide"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#believes -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#believes">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#destroy -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#destroy"/>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#eats -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#eats"/>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#feels -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#feels"/>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#has_depression -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#has_depression"/>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#is_smart -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#is_smart"/>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#likes -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#likes"/>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#lives -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#lives"/>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#loves -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#loves">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#produced_by -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#produced_by"/>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#travels_to -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#travels_to"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#earth -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#earth">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#planet"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#Alpha_Centauri -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#Alpha_Centauri">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#star_system"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#Betelgeuse -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#Betelgeuse">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#star_system"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#arts -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#arts"/>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#dolphin -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#dolphin">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#fauna"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#fauna -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#fauna">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#earth"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#fish -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#fish">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#fauna"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#god -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#god"/>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#hitchhicker -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#hitchhicker">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#lives"/>
+                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#planet"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#lives"/>
+                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#star_system"/>
+                    </owl:Restriction>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#travels_to"/>
+                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#planet"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#travels_to"/>
+                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#star_system"/>
+                    </owl:Restriction>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#human -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#human">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#earth"/>
+        <owl:disjointWith rdf:resource="http://www.semanticweb.org/ontologies/guide#vogon"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#mice -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#mice">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#fauna"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#music -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#music">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#produced_by"/>
+                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#human"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#produced_by"/>
+                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#robot"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#produced_by"/>
+                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#vogon"/>
+                    </owl:Restriction>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#arts"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#planet -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#planet"/>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#poetry -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#poetry">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#produced_by"/>
+                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#human"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#produced_by"/>
+                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#robot"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#produced_by"/>
+                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#vogon"/>
+                    </owl:Restriction>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#arts"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#robot -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#robot">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#tools"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#spaceship -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#spaceship">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#produced_by"/>
+                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#human"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#produced_by"/>
+                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#vogon"/>
+                    </owl:Restriction>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#travels_to"/>
+                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#planet"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#travels_to"/>
+                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#star_system"/>
+                    </owl:Restriction>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#tools"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#star_system -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#star_system"/>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#tools -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#tools"/>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#vogon -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#vogon">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#vogsphere"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#vogsphere -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#vogsphere">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#planet"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#Bernard&apos;s_Star -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#Bernard&apos;s_Star">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#star_system"/>
+    </owl:Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#Arthur_Dent -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Arthur_Dent">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#hitchhicker"/>
+        <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#human"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#Disaster_Area -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Disaster_Area">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#music"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#Ford_Prefect -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Ford_Prefect">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#hitchhicker"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#Heart_of_Gold -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Heart_of_Gold">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#spaceship"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#Marvin -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Marvin">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#robot"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#Prostetnic_Vogon_Jeltz -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Prostetnic_Vogon_Jeltz">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#vogon"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#Trillian_Astra -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Trillian_Astra">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#human"/>
+    </owl:NamedIndividual>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.2.5.20160517-0735) https://github.com/owlcs/owlapi -->
+
