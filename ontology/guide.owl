@@ -65,9 +65,13 @@
 
     <!-- http://www.semanticweb.org/ontologies/guide#hates -->
 
-    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#hates">
-        <owl:inverseOf rdf:resource="http://www.semanticweb.org/ontologies/guide#likes"/>
-    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#hates"/>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#hitchhikes -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#hitchhikes"/>
     
 
 
@@ -197,7 +201,7 @@
         <owl:equivalentClass>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#produced_by"/>
-                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#hitchhicker"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#hitchhiker"/>
             </owl:Restriction>
         </owl:equivalentClass>
         <owl:equivalentClass>
@@ -269,9 +273,15 @@
     
 
 
-    <!-- http://www.semanticweb.org/ontologies/guide#hitchhicker -->
+    <!-- http://www.semanticweb.org/ontologies/guide#hitchhiker -->
 
-    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#hitchhicker">
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#hitchhiker">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#hitchhikes"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#spaceship"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
         <owl:equivalentClass>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#lives"/>
@@ -288,12 +298,6 @@
             <owl:Restriction>
                 <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#produces"/>
                 <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#tools"/>
-            </owl:Restriction>
-        </owl:equivalentClass>
-        <owl:equivalentClass>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#travels_to"/>
-                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#planet"/>
             </owl:Restriction>
         </owl:equivalentClass>
         <owl:equivalentClass>
@@ -348,7 +352,7 @@
         <owl:equivalentClass>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#produced_by"/>
-                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#hitchhicker"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#hitchhiker"/>
             </owl:Restriction>
         </owl:equivalentClass>
         <owl:equivalentClass>
@@ -514,8 +518,9 @@
     <!-- http://www.semanticweb.org/ontologies/guide#Arthur_Dent -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Arthur_Dent">
-        <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#hitchhicker"/>
+        <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#hitchhiker"/>
         <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#human"/>
+        <is_friend_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Trillian_Astra"/>
         <is_friend_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Zaphod_Beeblebrox"/>
         <is_from rdf:resource="http://www.semanticweb.org/ontologies/guide#earth"/>
         <loves rdf:resource="http://www.semanticweb.org/ontologies/guide#Trillian_Astra"/>
@@ -550,13 +555,13 @@
     <!-- http://www.semanticweb.org/ontologies/guide#Ford_Prefect -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Ford_Prefect">
-        <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#hitchhicker"/>
+        <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#hitchhiker"/>
         <is_friend_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Arthur_Dent"/>
         <is_friend_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Trillian_Astra"/>
         <is_friend_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Zaphod_Beeblebrox"/>
         <is_relative_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Zaphod_Beeblebrox"/>
         <likes rdf:resource="http://www.semanticweb.org/ontologies/guide#Disaster_Area"/>
-        <writes rdf:resource="http://www.semanticweb.org/ontologies/guide#Hitchhicker&apos;s_Guide_To_The_Galaxy"/>
+        <writes rdf:resource="http://www.semanticweb.org/ontologies/guide#Hitchhiker&apos;s_Guide_To_The_Galaxy"/>
     </owl:NamedIndividual>
     
 
@@ -641,9 +646,9 @@
     
 
 
-    <!-- http://www.semanticweb.org/ontologies/guide#Hitchhicker&apos;s_Guide_To_The_Galaxy -->
+    <!-- http://www.semanticweb.org/ontologies/guide#Hitchhiker&apos;s_Guide_To_The_Galaxy -->
 
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Hitchhicker&apos;s_Guide_To_The_Galaxy">
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Hitchhiker&apos;s_Guide_To_The_Galaxy">
         <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#book"/>
     </owl:NamedIndividual>
 </rdf:RDF>
