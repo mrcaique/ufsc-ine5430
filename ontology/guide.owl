@@ -41,17 +41,19 @@
     
 
 
+    <!-- http://www.semanticweb.org/ontologies/guide#eaten_by -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#eaten_by">
+        <owl:inverseOf rdf:resource="http://www.semanticweb.org/ontologies/guide#eats"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://www.semanticweb.org/ontologies/guide#eats -->
 
     <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#eats">
         <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
     </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.semanticweb.org/ontologies/guide#feels -->
-
-    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#feels"/>
     
 
 
@@ -77,6 +79,7 @@
                 <owl:inverseOf rdf:resource="http://www.semanticweb.org/ontologies/guide#is_friend_of"/>
             </rdf:Description>
         </owl:equivalentProperty>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
     </owl:ObjectProperty>
     
 
@@ -89,7 +92,13 @@
 
     <!-- http://www.semanticweb.org/ontologies/guide#is_relative_of -->
 
-    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#is_relative_of"/>
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#is_relative_of">
+        <owl:equivalentProperty>
+            <rdf:Description>
+                <owl:inverseOf rdf:resource="http://www.semanticweb.org/ontologies/guide#is_relative_of"/>
+            </rdf:Description>
+        </owl:equivalentProperty>
+    </owl:ObjectProperty>
     
 
 
@@ -241,6 +250,12 @@
     <!-- http://www.semanticweb.org/ontologies/guide#fish -->
 
     <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#fish">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#eaten_by"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#dolphin"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
         <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#fauna"/>
     </owl:Class>
     
@@ -258,29 +273,27 @@
 
     <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#hitchhicker">
         <owl:equivalentClass>
-            <owl:Class>
-                <owl:unionOf rdf:parseType="Collection">
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#lives"/>
-                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#planet"/>
-                    </owl:Restriction>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#lives"/>
-                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#star_system"/>
-                    </owl:Restriction>
-                </owl:unionOf>
-            </owl:Class>
-        </owl:equivalentClass>
-        <owl:equivalentClass>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#travels_to"/>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#lives"/>
                 <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#planet"/>
             </owl:Restriction>
         </owl:equivalentClass>
         <owl:equivalentClass>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#travels_to"/>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#lives"/>
                 <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#star_system"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#produces"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#tools"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#travels_to"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#planet"/>
             </owl:Restriction>
         </owl:equivalentClass>
         <owl:equivalentClass>
@@ -312,6 +325,12 @@
     <!-- http://www.semanticweb.org/ontologies/guide#mice -->
 
     <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#mice">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#produces"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#planet"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
         <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#fauna"/>
     </owl:Class>
     
@@ -405,18 +424,10 @@
 
     <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#spaceship">
         <owl:equivalentClass>
-            <owl:Class>
-                <owl:unionOf rdf:parseType="Collection">
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#travels_to"/>
-                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#planet"/>
-                    </owl:Restriction>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#travels_to"/>
-                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#star_system"/>
-                    </owl:Restriction>
-                </owl:unionOf>
-            </owl:Class>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#travels_to"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#universe"/>
+            </owl:Restriction>
         </owl:equivalentClass>
         <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#tools"/>
     </owl:Class>
@@ -505,6 +516,8 @@
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Arthur_Dent">
         <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#hitchhicker"/>
         <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#human"/>
+        <is_friend_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Zaphod_Beeblebrox"/>
+        <is_from rdf:resource="http://www.semanticweb.org/ontologies/guide#earth"/>
         <loves rdf:resource="http://www.semanticweb.org/ontologies/guide#Trillian_Astra"/>
     </owl:NamedIndividual>
     
@@ -560,6 +573,7 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Marvin">
         <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#robot"/>
+        <lives rdf:resource="http://www.semanticweb.org/ontologies/guide#Heart_of_Gold"/>
     </owl:NamedIndividual>
     
 
@@ -569,6 +583,8 @@
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Prostetnic_Vogon_Jeltz">
         <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#vogon"/>
         <destroy rdf:resource="http://www.semanticweb.org/ontologies/guide#earth"/>
+        <hates rdf:resource="http://www.semanticweb.org/ontologies/guide#Arthur_Dent"/>
+        <hates rdf:resource="http://www.semanticweb.org/ontologies/guide#Ford_Prefect"/>
         <hates rdf:resource="http://www.semanticweb.org/ontologies/guide#Barnard&apos;s_Star"/>
         <lives rdf:resource="http://www.semanticweb.org/ontologies/guide#vogosphere"/>
     </owl:NamedIndividual>
@@ -579,6 +595,7 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Trillian_Astra">
         <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#human"/>
+        <is_friend_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Zaphod_Beeblebrox"/>
     </owl:NamedIndividual>
     
 
