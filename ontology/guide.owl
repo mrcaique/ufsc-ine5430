@@ -286,6 +286,12 @@
         </owl:equivalentClass>
         <owl:equivalentClass>
             <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#is_from"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#planet"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <owl:equivalentClass>
+            <owl:Restriction>
                 <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#lives"/>
                 <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#planet"/>
             </owl:Restriction>
@@ -499,6 +505,18 @@
     <!-- http://www.semanticweb.org/ontologies/guide#vogon -->
 
     <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#vogon">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#hates"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#hitchhiker"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#is_from"/>
+                <owl:hasValue rdf:resource="http://www.semanticweb.org/ontologies/guide#vogosphere"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
         <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#life"/>
     </owl:Class>
     
@@ -598,7 +616,6 @@
         <hates rdf:resource="http://www.semanticweb.org/ontologies/guide#Arthur_Dent"/>
         <hates rdf:resource="http://www.semanticweb.org/ontologies/guide#Ford_Prefect"/>
         <hates rdf:resource="http://www.semanticweb.org/ontologies/guide#Barnard&apos;s_Star"/>
-        <lives rdf:resource="http://www.semanticweb.org/ontologies/guide#vogosphere"/>
     </owl:NamedIndividual>
     
 
