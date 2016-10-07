@@ -71,7 +71,9 @@
 
     <!-- http://www.semanticweb.org/ontologies/guide#hitchhikes -->
 
-    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#hitchhikes"/>
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#hitchhikes">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+    </owl:ObjectProperty>
     
 
 
@@ -314,6 +316,12 @@
     <!-- http://www.semanticweb.org/ontologies/guide#human -->
 
     <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#human">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#is_from"/>
+                <owl:hasValue rdf:resource="http://www.semanticweb.org/ontologies/guide#earth"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
         <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#life"/>
         <owl:disjointWith rdf:resource="http://www.semanticweb.org/ontologies/guide#vogon"/>
     </owl:Class>
@@ -522,7 +530,6 @@
         <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#human"/>
         <is_friend_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Trillian_Astra"/>
         <is_friend_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Zaphod_Beeblebrox"/>
-        <is_from rdf:resource="http://www.semanticweb.org/ontologies/guide#earth"/>
         <loves rdf:resource="http://www.semanticweb.org/ontologies/guide#Trillian_Astra"/>
     </owl:NamedIndividual>
     
