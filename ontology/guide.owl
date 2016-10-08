@@ -439,12 +439,6 @@ Examples of good, if long, poetry can be heard on the planet of Golgafrincham, h
     <!-- http://www.semanticweb.org/ontologies/guide#robot -->
 
     <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#robot">
-        <owl:equivalentClass>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#is_friend_of"/>
-                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#human"/>
-            </owl:Restriction>
-        </owl:equivalentClass>
         <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#tools"/>
         <rdfs:comment xml:lang="en">&quot;A robot is a mechanical or virtual artificial agent, usually an electro-mechanical machine that is guided by a computer program or electronic circuitry. The Encyclopedia Galactica defines a robot as &apos;a mechanical apparatus designed to do the work of a man&apos;. The marketing division of the Sirius Cybernetics Corporation defines a robot as &apos;Your Plastic Pal Who&apos;s Fun To Be With&apos;.&quot;
 
