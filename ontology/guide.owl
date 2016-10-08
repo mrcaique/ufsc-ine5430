@@ -423,6 +423,15 @@
             </owl:Restriction>
         </owl:equivalentClass>
         <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#arts"/>
+        <rdfs:comment>&quot;Poetry, well written, can be a spiritually uplifting experience. Badly written, it can be an experience of buttock-clenching horror.
+
+The third worst poetry in the universe is written by Vogons, and frequently used as a form of torture.
+
+The absolute worst poetry was written by Paula Nancy Millstone Jennings. It involved decaying swans. Luckily, it was destroyed during the demolition of the Earth.
+
+Examples of good, if long, poetry can be heard on the planet of Golgafrincham, home to the great circling poets of Arium.&quot;
+
+[Source: http://www.bbc.co.uk/cult/hitchhikers/guide/poetry.shtml]</rdfs:comment>
     </owl:Class>
     
 
@@ -430,6 +439,12 @@
     <!-- http://www.semanticweb.org/ontologies/guide#robot -->
 
     <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#robot">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#is_friend_of"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#human"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
         <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#tools"/>
         <rdfs:comment xml:lang="en">&quot;A robot is a mechanical or virtual artificial agent, usually an electro-mechanical machine that is guided by a computer program or electronic circuitry. The Encyclopedia Galactica defines a robot as &apos;a mechanical apparatus designed to do the work of a man&apos;. The marketing division of the Sirius Cybernetics Corporation defines a robot as &apos;Your Plastic Pal Who&apos;s Fun To Be With&apos;.&quot;
 
@@ -518,6 +533,17 @@
             </owl:Restriction>
         </owl:equivalentClass>
         <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#life"/>
+        <rdfs:comment xml:lang="en">&quot;Vogons are extremely ugly, extremely officious, and generally not much fun to be around.
+
+They emerged from the seas of the planet Vogsphere, and gave up on evolving there and then. Only their stubbornness allowed them to survive.
+
+They generally become bureaucrats in the galactic government. Their unpleasant demeanour makes them ideally suited to such employment.
+
+One such Vogon is Prostetnic Vogon Jeltz, of the Vogon Constructor fleet. Having destroyed the Earth in order to make way for a hyperspace bypass, he then proceded to read some of his poetry to two helpless victims.
+
+It is hard to hitch lifts on Vogon ships - it is only made possible by the Dentrassi cooks employed by Vogon fleets.&quot;
+
+[Source: http://www.bbc.co.uk/cult/hitchhikers/guide/vogon.shtml]</rdfs:comment>
     </owl:Class>
     
 
@@ -613,9 +639,15 @@
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Prostetnic_Vogon_Jeltz">
         <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#vogon"/>
         <destroy rdf:resource="http://www.semanticweb.org/ontologies/guide#earth"/>
-        <hates rdf:resource="http://www.semanticweb.org/ontologies/guide#Arthur_Dent"/>
-        <hates rdf:resource="http://www.semanticweb.org/ontologies/guide#Ford_Prefect"/>
         <hates rdf:resource="http://www.semanticweb.org/ontologies/guide#Barnard&apos;s_Star"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#So_Long_And_Thanks_For_All_The_Fish -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#So_Long_And_Thanks_For_All_The_Fish">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#music"/>
     </owl:NamedIndividual>
     
 
@@ -649,7 +681,15 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#earth">
         <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#planet"/>
-        <rdfs:comment xml:lang="en">Mostly Harmless</rdfs:comment>
+        <rdfs:comment xml:lang="en">&quot;Mostly Harmless
+
+A small, blue-green world in one of the less fashionable sectors of the galaxy. It was demolished by the Vogons in order to make way for a hyperspace bypass.
+
+Two humans survived; Arthur Dent, and Trillian. Two mice and some dolphins also escaped.
+
+The Earth was often mistaken for a planet. It was, in fact, a powerful supercomputer running a program designed by hyper-intelligent pan-dimensional beings.&quot;
+
+[Source: http://www.bbc.co.uk/cult/hitchhikers/guide/earth.shtml]</rdfs:comment>
     </owl:NamedIndividual>
     
 
