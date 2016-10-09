@@ -133,11 +133,7 @@
 
     <!-- http://www.semanticweb.org/ontologies/guide#travels_to -->
 
-    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#travels_to">
-        <owl:propertyChainAxiom rdf:parseType="Collection">
-            <rdf:Description rdf:about="http://www.semanticweb.org/ontologies/guide#hitchhikes"/>
-        </owl:propertyChainAxiom>
-    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#travels_to"/>
     
 
 
@@ -276,12 +272,6 @@
     <!-- http://www.semanticweb.org/ontologies/guide#god -->
 
     <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#god">
-        <owl:equivalentClass>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#produces"/>
-                <owl:someValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#Nothing"/>
-            </owl:Restriction>
-        </owl:equivalentClass>
         <owl:disjointWith rdf:resource="http://www.semanticweb.org/ontologies/guide#life"/>
     </owl:Class>
     
