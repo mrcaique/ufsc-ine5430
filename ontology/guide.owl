@@ -21,12 +21,6 @@
     
 
 
-    <!-- http://www.semanticweb.org/ontologies/guide#believes_in -->
-
-    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#believes_in"/>
-    
-
-
     <!-- http://www.semanticweb.org/ontologies/guide#destroy -->
 
     <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#destroy">
@@ -120,14 +114,6 @@
     
 
 
-    <!-- http://www.semanticweb.org/ontologies/guide#loves -->
-
-    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#loves">
-        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
-    </owl:ObjectProperty>
-    
-
-
     <!-- http://www.semanticweb.org/ontologies/guide#produced_by -->
 
     <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#produced_by">
@@ -181,6 +167,22 @@
     <!-- http://www.semanticweb.org/ontologies/guide#arts -->
 
     <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#arts">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#produced_by"/>
+                        <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minQualifiedCardinality>
+                        <owl:onClass rdf:resource="http://www.semanticweb.org/ontologies/guide#life"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#produced_by"/>
+                        <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minQualifiedCardinality>
+                        <owl:onClass rdf:resource="http://www.semanticweb.org/ontologies/guide#robot"/>
+                    </owl:Restriction>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
         <owl:equivalentClass>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#produced_by"/>
@@ -286,12 +288,6 @@
         </owl:equivalentClass>
         <owl:equivalentClass>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#is_from"/>
-                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#planet"/>
-            </owl:Restriction>
-        </owl:equivalentClass>
-        <owl:equivalentClass>
-            <owl:Restriction>
                 <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#lives"/>
                 <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#planet"/>
             </owl:Restriction>
@@ -336,19 +332,21 @@
 
     <!-- http://www.semanticweb.org/ontologies/guide#life -->
 
-    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#life"/>
+    <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#life">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#is_from"/>
+                <owl:qualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:qualifiedCardinality>
+                <owl:onClass rdf:resource="http://www.semanticweb.org/ontologies/guide#planet"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+    </owl:Class>
     
 
 
     <!-- http://www.semanticweb.org/ontologies/guide#mice -->
 
     <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#mice">
-        <owl:equivalentClass>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#produces"/>
-                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#planet"/>
-            </owl:Restriction>
-        </owl:equivalentClass>
         <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/guide#fauna"/>
     </owl:Class>
     
@@ -568,7 +566,6 @@ It is hard to hitch lifts on Vogon ships - it is only made possible by the Dentr
         <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#human"/>
         <is_friend_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Trillian_Astra"/>
         <is_friend_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Zaphod_Beeblebrox"/>
-        <loves rdf:resource="http://www.semanticweb.org/ontologies/guide#Trillian_Astra"/>
     </owl:NamedIndividual>
     
 
