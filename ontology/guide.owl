@@ -57,6 +57,14 @@
     
 
 
+    <!-- http://www.semanticweb.org/ontologies/guide#has_pet -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#has_pet">
+        <owl:inverseOf rdf:resource="http://www.semanticweb.org/ontologies/guide#is_pet_of"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://www.semanticweb.org/ontologies/guide#hates -->
 
     <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#hates"/>
@@ -87,6 +95,12 @@
     <!-- http://www.semanticweb.org/ontologies/guide#is_from -->
 
     <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#is_from"/>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#is_pet_of -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ontologies/guide#is_pet_of"/>
     
 
 
@@ -318,6 +332,12 @@
     <!-- http://www.semanticweb.org/ontologies/guide#human -->
 
     <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#human">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#has_pet"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ontologies/guide#fauna"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
         <owl:equivalentClass>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#is_from"/>
@@ -578,6 +598,15 @@ It is hard to hitch lifts on Vogon ships - it is only made possible by the Dentr
     
 
 
+    <!-- http://www.semanticweb.org/ontologies/guide#Benjy -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Benjy">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#mice"/>
+        <is_pet_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Trillian_Astra"/>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://www.semanticweb.org/ontologies/guide#Disaster_Area -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Disaster_Area">
@@ -608,6 +637,16 @@ It is hard to hitch lifts on Vogon ships - it is only made possible by the Dentr
     
 
 
+    <!-- http://www.semanticweb.org/ontologies/guide#Frankie -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Frankie">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#mice"/>
+        <is_friend_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Benjy"/>
+        <is_pet_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Trillian_Astra"/>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://www.semanticweb.org/ontologies/guide#Heart_of_Gold -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Heart_of_Gold">
@@ -620,6 +659,10 @@ It is hard to hitch lifts on Vogon ships - it is only made possible by the Dentr
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Marvin">
         <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#robot"/>
+        <is_friend_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Arthur_Dent"/>
+        <is_friend_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Ford_Prefect"/>
+        <is_friend_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Trillian_Astra"/>
+        <is_friend_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Zaphod_Beeblebrox"/>
         <lives rdf:resource="http://www.semanticweb.org/ontologies/guide#Heart_of_Gold"/>
     </owl:NamedIndividual>
     
@@ -664,6 +707,7 @@ It is hard to hitch lifts on Vogon ships - it is only made possible by the Dentr
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#babel_fish">
         <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#fish"/>
+        <is_pet_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Arthur_Dent"/>
     </owl:NamedIndividual>
     
 
