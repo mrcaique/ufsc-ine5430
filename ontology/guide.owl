@@ -341,6 +341,12 @@
         <owl:equivalentClass>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#is_from"/>
+                <owl:hasValue rdf:resource="http://www.semanticweb.org/ontologies/guide#Milky_Way"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#is_from"/>
                 <owl:hasValue rdf:resource="http://www.semanticweb.org/ontologies/guide#earth"/>
             </owl:Restriction>
         </owl:equivalentClass>
@@ -353,6 +359,13 @@
     <!-- http://www.semanticweb.org/ontologies/guide#life -->
 
     <owl:Class rdf:about="http://www.semanticweb.org/ontologies/guide#life">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#is_from"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minQualifiedCardinality>
+                <owl:onClass rdf:resource="http://www.semanticweb.org/ontologies/guide#universe"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
         <owl:equivalentClass>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="http://www.semanticweb.org/ontologies/guide#is_from"/>
@@ -664,6 +677,14 @@ It is hard to hitch lifts on Vogon ships - it is only made possible by the Dentr
         <is_friend_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Trillian_Astra"/>
         <is_friend_of rdf:resource="http://www.semanticweb.org/ontologies/guide#Zaphod_Beeblebrox"/>
         <lives rdf:resource="http://www.semanticweb.org/ontologies/guide#Heart_of_Gold"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/guide#Milky_Way -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ontologies/guide#Milky_Way">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/guide#star_system"/>
     </owl:NamedIndividual>
     
 
