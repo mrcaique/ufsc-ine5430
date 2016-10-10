@@ -1,0 +1,140 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel} % Texto em português do Brasil
+\usepackage[a4paper, left=20mm, right=20mm, top=20mm, bottom=20mm]{geometry}
+\usepackage[num]{abntex2cite}
+\usepackage{csquotes}
+
+\title{\textbf{INE5430 - Inteligência Artificial \\
+        \large Trabalho T2 - Ontologias}}
+\author{
+    Caique Rodrigues Marques \\
+    {\texttt{c.r.marques@grad.ufsc.br}}
+    \and
+    Fernando Jorge Mota \\
+    {\texttt{contato@fjorgemota.com}}
+    \vspace{-5mm}
+}
+\date{}
+\begin{document}
+    \maketitle
+    \section*{Domínio}
+        O tema para a ontologia deste trabalho é baseado na série \textit{O
+        Guia do Mochileiro das Galáxias} (1979), por Douglas Adams, dividido-se
+        numa trilogia de seis livros - descrição dada pelo autor. A obra
+        apresenta as aventuras de Arthur Dent, um pacato inglês, e de seu amigo
+        Ford Prefect, um nativo de Beetelgeuse que vive disfarçado na Terra
+        enquanto faz a pesquisa para escrever a nova edição do Guia do
+        Mochileiro das Galáxias. A Terra é demolida por vogons para a
+        construção de um desvio intergaláctico, porém, a dupla escapa pegando
+        carona numa nave alienígena graças a Ford, desenrolando uma série de
+        eventos inesperados. O grande destaque do livro é o humor inteligente,
+        Adams fez questão de apresentar seus personagens em situações mais
+        esquisitas possíveis, satirizando e tirando deboche de diversos temas
+        como política e religião.
+        
+        \subsection*{A ontologia}
+            O universo de \textit{O Guia do Mochileiro das Galáxias} é bem
+            extenso e vasto, portanto, nos delimitamos a pegar apenas uma parte
+            da série. A divisão principal está em três grandes classes: vida
+            (\textit{life}), Universo (\textit{universe}) e tudo mais
+            (\textit{owl:Thing}), onde o primeiro corresponde aos seres vivos,
+            como humanos, vogons e golfinhos; o segundo corresponde a corpos
+            celestes, que são planetas e sistemas solares; por fim, o terceiro
+            corresponde ao resto, no caso, ferramentas e artes.
+            
+            As propriedades são mais variadas, correspondendo mais a ações
+            efetuadas por seres vivos, como comer, produzir, viajar, pegar
+            carona, gostar, odiar, etc., e o inverso de algumas também estão
+            inclusas, como ser comido, ser produzido, ser destruído, etc..
+            Outras propriedades também são inversíveis, como Arthur ser amigo
+            de Ford, implica que Ford é amigo de Arthur.
+            
+        \subsection*{Testes}
+            Cada classe tem suas propriedades, que acabam sendo aplicadas às
+            suas subclasses (quando têm) e às suas instâncias.
+            
+            Em questão de cardinalidade exata, a máquina consegue achar
+            facilmente uma inconsistência quando algo não é do valor exato
+            definido na equivalência. Por exemplo, a classe \texttt{life} tem
+            como equivalência que é provinda de um e apenas um planeta,
+            portanto, um dado ser vivo é nativo de apenas um planeta, assim as
+            subclasses de \texttt{life} também vão ter tal equivalência. Logo,
+            ao especificar que humanos são nativos do planeta Terra, a máquina
+            conseguirá inferir que qualquer instância de humano será do planeta
+            Terra e de nenhum outro lugar.
+            
+            A cardinalidade mínima indica que tem de haver no mínimo uma
+            condição para acontecer, portanto, a vida só pode existir se ela
+            for provinda de algum universo.
+            
+            As relações inversas são definidas de princípio, como
+            \texttt{has\_pet} é o inverso de \texttt{is\_pet\_of}, assim, se
+            Benjy e Frankie são mascotes da Trillian, a máquina conseguirá
+            inferir que Trillian tem Benjy e Frankie como mascotes.
+            
+            As relações simétricas definem que se \texttt{A} tem relação com
+            \texttt{B}, então \texttt{B} também terá relação com \texttt{A}. Um
+            exemplo de relação simétrica é parentesco, pois se Ford é parente
+            de Zaphod, então a máquina consegue inferir que Zaphod é, também,
+            parente de Ford.
+
+    \section*{SubClassOf e EquivalentTo}
+        \begin{itemize}
+            \item Na linguagem OWL, quando a classe \texttt{A} é subclasse da
+                propriedade \texttt{B}, isto significa que a classe \texttt{A}
+                herda tal propriedade, porém, se uma instância tiver a
+                propriedade \texttt{B}, não necessariamente será do tipo
+                \texttt{A}. Por exemplo, as ferramentas (\textit{tools}) têm
+                como subclasses robôs (\textit{robot}) e naves espaciais
+                (\textit{spaceship}), portanto, qualquer robô ou nave sempre
+                será produzido por algum vogon e/ou por algum humano. Se o Guia
+                do Mochileiro das Galáxias é produzido por algum ser vivo, não
+                necessariamente ele será uma ferramenta ou um robô, mas será um
+                livro. 
+            
+            \item A equivalência é uma relação bidirecional, ou seja, se a
+                classe \texttt{A} é equivalente à propriedade \texttt{B}, então
+                significa que quaisquer que sejam as instâncias que tenham a
+                propriedade \texttt{B}, ela será do tipo \texttt{A}. Por
+                exemplo, a classe \texttt{human} tem como equivalência que
+                seres deste tipo são nativos do planeta Terra, então, se Arthur
+                Dent é humano, claramente ele é do planeta Terra.
+        \end{itemize}
+    
+    \section*{Sobre o motor de inferência}
+        O motor de inferência utilizado neste trabalho foi o \textbf{HermiT},
+        conforme sugestão dada pelo professor durante a aula. O HermiT é um
+        motor de inferência para ontologias usando a OWL, de código aberto e
+        licenciado sob a GPL, que é capaz de inferir variados aspectos a
+        respeito de uma ontologia, como se ela é consistente ou não, por
+        exemplo.
+        
+        Entre os destaques a respeito deste motor de inferência, se encontra o
+        fato de que o HermiT usa uma forma mais avançada de cálculo, denominada
+        \textit{"hypertableau calculus"}, que permite que o motor faça em
+        segundos, inferências que antes levavam minutos ou até horas, se
+        tornando o primeiro motor de inferência capaz de classificar ontologias
+        antes consideradas muito complexas para serem trabalhadas.
+        
+        Quanto a seu funcionamento, o HermiT funciona sob um princípio inovador
+        quando comparado com outros motores de inferência. Primeiramente, para
+        uma determinada ontologia, é criado um "\textit{description graph}"
+        (grafo de descrição, em tradução livre), que permite a descrição dos
+        objetos estruturados que compõem a OWL de uma forma bastante simples e
+        precisa, o que resolve o problema do OWL em descrever estruturas
+        arbitrariamente conectadas e assim evita problemas de performance
+        durante a realização das inferências. 
+        
+        Depois disso, a inferência é realizada em duas etapas: uma de
+        pré-processamento, no qual os axiomas e o grafo de descrição são
+        traduzidos em um conjunto equisatisfazível de regras (ou seja, um
+        conjunto no qual se uma regra é satisfazível, então a outra também o é
+        e vice-versa), e outra denominada "\textit{hypertableau}", no qual se
+        busca construir um modelo baseando-se em um conjunto de regras
+        relacionada ao OWL e aos resultados do pré-processamento.
+
+    \nocite{stackoverflow, hermit, mgs08structured-objects}
+
+    \bibliography{references}
+\end{document}
