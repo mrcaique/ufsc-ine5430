@@ -1,0 +1,197 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage[a4paper, left=20mm, right=20mm, top=20mm, bottom=20mm]{geometry}
+\usepackage[fleqn]{amsmath}
+
+\title{\textbf{INE5430 - Inteligência Artificial \\
+        \large Trabalho T3 - Raciocínio Probabilístico}}
+\author{
+    Caique Rodrigues Marques \\
+    {\texttt{c.r.marques@grad.ufsc.br}}
+    \and
+    Fernando Jorge Mota \\
+    {\texttt{contato@fjorgemota.com}}
+    \vspace{-5mm}
+}
+\date{}
+\begin{document}
+    \maketitle
+    \section*{Questão 1}
+        Qual a probabilidade de não ver um zumbi dado que um feitiço
+        mágico não foi lançado e não há um surto viral? Pelas informações
+        fornecidas, é possível inferir:
+        \begin{gather*}
+            P(Zb=N|Vr=N \land Mg=N) = 0.99 = 99\%
+        \end{gather*}
+
+    \section*{Questão 2}
+        Qual a probabilidade do mundo estar no seguinte estado: 
+        $P(Mg=S, Hp=S, Zb=S, Vr=S, Tp=S)$? \\
+        Tal estado significa todas as possíveis aparições dos seres e dos
+        eventos ao mesmo tempo, portanto:
+        \begin{gather*}
+            P(Mg=S, Hp=S, Zb=S, Vr=S, Tp=S) \\
+            \,= P(Mg=S) \times P(Vr=S) \times P(Hp=S|Mg=S) \\
+            \qquad\times P(Zb=S|Mg=S \land Vr=S) \times P(Tp=S|Vr=S) \\
+            \,= 0.1 \times 0.2 \times 0.8 \times 0.6 \times 0.3
+            = 0.00288 \approx 0.288\%
+        \end{gather*}
+
+    \section*{Questão 3}
+        Qual a probabilidade de se ver um zumbi? \\
+        Como a aparição de um zumbi está relacionada com as aparições de um
+        feitiço mágico e de um surto viral, estas variáveis \textit{a priori}
+        também devem ser consideradas:
+        \begin{gather*}
+            P(Zb=S) \\
+            \,= P(Zb=S|Mg=S \land Vr=S) \times P(Mg=S) \times P(Vr=S) \\
+            \qquad+ P(Zb=S|Mg=S \land Vr=N) \times P(Mg=S) \times P(Vr=S) \\
+            \qquad+ P(Zb=S|Mg=N \land Vr=S) \times P(Mg=N) \times P(Vr=S) \\
+            \qquad+ P(Zb=S|Mg=N \land Vr=N) \times P(Mg=N) \times P(Vr=N) \\
+            \,= (0.6 \times 0.1 \times 0.2) + (0.5 \times 0.1 \times 0.8)
+            + (0.4 \times 0.9 \times 0.2) + (0.01 \times 0.9 \times 0.8) \\
+            \,= 0.012 + 0.04 + 0.072 + 0.0072
+            = 0.1312 = 13.12\%
+        \end{gather*}
+
+    \section*{Questão 4}
+        Qual a probabilidade de se ver um zumbi dado que está havendo
+        um surto viral? \\
+        A aparição de um zumbi está relacionada com a aparição de um surto viral,
+        portanto, há de se considerar a probabilidade de ambas acontecerem ao mesmo
+        tempo.
+        \begin{gather*}
+            P(Zb=S \land Vr=S) \\
+            \,= P(Zb=S|Mg=S \land Vr=S) \times P(Mg=S) \times P(Vr=S) \\
+            \qquad+ P(Zb=S|Mg=N \land Vr=S) \times P(Mg=N) \times P(Vr=S) \\
+            \,= (0.6 \times 0.1 \times 0.2) + (0.4 \times 0.9 \times 0.2)
+            = 0.012 + 0.072 = 0.084
+        \end{gather*}
+        Portanto, pelo teorema de Bayes:
+        \begin{gather*}
+            P(Zb=S|Vr=S) = \frac{P(Zb=S \land Vr=S)}{P(Vr=S)} = \frac{0.084}{0.2}
+            = 0.42 = 42\%
+        \end{gather*}
+    \section*{Questão 5}
+        Qual a probabilidade de se ver um hipogrifo dado que você
+        conseguiu ver um zumbi? \\
+        Tanto a aparição de zumbi quanto a aparição de hipogrifo estão relacionados
+        com o uso de feitiço mágico, assim, o caso em que zumbi e hipogrifo aparecem
+        quando há o uso de feitiço mágico deve ser calculado:
+        \begin{gather*}
+            P(Hp=S \land Zb=S \land Mg=S) \\
+            \,= P(Mg=S) \times P(Zb=S|Mg=S) \times P(Hp=S|Mg=S) \\
+            \,= 0.1 \times 0.52 \times 0.8 = 0.0416
+        \end{gather*}
+        \begin{gather*}
+            P(Zb=S|Mg=S) \\
+            \,= P(Zb=S|Mg=S \land Vr=S) \times P(Vr=S)
+            + P(Zb=S|Mg=S \land Vr=N) \times P(Vr=N) \\
+            \,= (0.6 \times 0.2) + (0.5 \times 0.8)
+            = (0.12) + (0.4) = 0.52
+        \end{gather*}
+        Inclusive, o caso dos avistamentos de zumbi e hipogrifo e o não uso de
+        feitiço mágico deve ser considerado:
+        \begin{gather*}
+            P(Hp=S \land Zb=S \land Mg=N) \\
+            \,= P(Mg=N) \times P(Zb=S|Mg=N) \times P(Hp=S|Mg=N) \\
+            \,= 0.9 \times 0.088 \times 0.7 = 0.05544
+        \end{gather*}
+        \begin{gather*}
+            P(Zb=S|Mg=N) \\
+            \,= P(Zb=S|Mg=N \land Vr=S) \times P(Vr=S)
+            + P(Zb=S|Mg=N \land Vr=N) \times P(Vr=N) \\
+            \,= (0.4 \times 0.2) + (0.01 \times 0.8)
+            = (0.08) + (0.008) = 0.088
+        \end{gather*}
+        Por fim, pelo teorema de Bayes:
+        \begin{gather*}
+            P(Hp=S|Zb=S) \\
+            \,= \frac{P(Hp=S \land Zb=S \land Mg=S)
+                + P(Hp=S \land Zb=S \land Mg=N)}{P(Zb=S)} \\
+            \,= \frac{0.0416 + 0.05544}{0.1312}
+            = \frac{0.09704}{0.1312}
+            = 0.73963414 \approx  73.97\%
+        \end{gather*}
+
+    \section*{Questão 6}
+        Qual a probabilidade de se ver um zumbi dado que você conseguiu
+        ver um hipogrifo? \\
+        Primeiramente, é necessário verificar a probabilidade de se ver
+        um hipogrifo:
+        \begin{gather*}
+            P(Hp=S) \\
+            \,= P(Hp=S|Mg=S) \times P(Mg=S) + P(Hp=S|Mg=N) \times P(Mg=N) \\
+            \,= (0.8 \times 0.1) + (0.7 \times 0.9)
+            \,= 0.08 + 0.63 = 0.71
+        \end{gather*}
+        Assim:
+        \begin{gather*}
+            P(Zb=S|Hp=S) \\
+            \,= \frac{P(Hp=S \land Zb=S \land Mg=S \land Vr=S)
+            + P(Hp=S \land Zb=S \land Mg=S \land Vr=N)}{P(Hp=S)} \\
+            \qquad+ \frac{P(Hp=S \land Zb=S \land Mg=N \land Vr=S)
+            + P(Hp=S \land Zb=S \land Mg=N \land Vr=N)}{P(Hp=S)} \\
+            \,= \frac{P(Zb=S|Vr=S \land Mg=S) \times P(Mg=S) \times P(Vr=S)
+                \times P(Hp=S|Mg=S)}{P(Hp=S)} \\
+            \qquad+ \frac{P(Zb=S|Vr=N \land Mg=S) \times P(Mg=S) \times P(Vr=N)
+                \times P(Hp=S|Mg=S)}{P(Hp=S)} \\
+            \qquad+ \frac{P(Zb=S|Vr=S \land Mg=N) \times P(Mg=N) \times P(Vr=S)
+                P(Hp=S|Mg=N)}{P(Hp=S)} \\
+            \qquad+ \frac{P(Zb=S|Vr=N \land Mg=N) \times P(Mg=N) \times P(Vr=N)
+                P(Hp=S|Mg=N)}{P(Hp=S)} \\
+            \,= \frac{0.6 \times 0.1 \times 0.2 \times 0.8}{P(Hp=S)}
+            + \frac{0.5 \times 0.1 \times 0.8 \times 0.8}{P(Hp=S)}
+            + \frac{0.4 \times 0.9 \times 0.2 \times 0.7}{P(Hp=S)}
+            + \frac{0.01 \times 0.9 \times 0.8 \times 0.7}{P(Hp=S)} \\
+            \,= \frac{0.0096 + 0.032 + 0.0504 + 0.00504}{0.71}
+            \,= \frac{0.09704}{0.71} = 0.136676056 \approx 13.67\%
+        \end{gather*}
+
+    \section*{Questão 7}
+        Qual a probabilidade de se ver um zumbi dado que você
+        conseguiu ver um hipogrifo e um viajante do tempo?
+        Dado que as aparições de hipogrifo e viajante do tempo
+        são eventos independentes (lembrando que já sabemos a
+        probabilidade \textit{a priori} de aparição de hipogrifos,
+        vide questão 6), portanto:
+        \begin{gather*}
+            P(Hp=S \land Tp=S) \\
+            \,= P(Hp=S) \times P(Tp=S) \\
+            \,= (0.71) \times 
+                (P(Tp=S|Vr=S) \times P(Vr=S) + P(Tp=S|Vr=N) \times P(Vr=N)) \\
+            \,= (0.71) \times (0.3 \times 0.2 + 0.1 \times 0.8)
+                = 0.71 \times 0.14 = 0.0994
+        \end{gather*}
+        Assim:
+        \begin{gather*}
+            P(Zb=S|Hp=S \land Tp=S) \\
+            \,= \frac{P(Zb=S \land Hp=S \land Tp=S \land Mg=S \land Vr=S)}
+                {P(Hp=S \land Tp=S)} \\
+            \qquad+ \frac{P(Zb=S \land Hp=S \land Tp=S \land Mg=S \land Vr=N)}
+                {P(Hp=S \land Tp=S)} \\
+            \qquad+ \frac{P(Zb=S \land Hp=S \land Tp=S \land Mg=N \land Vr=S)}
+                {P(Hp=S \land Tp=S)} \\
+            \qquad+ \frac{P(Zb=S \land Hp=S \land Tp=S \land Mg=N \land Vr=N)}
+                {P(Hp=S \land Tp=S)} \\
+            \,= \frac{P(Zb=S|Mg=S \land Vr=S) \times P(Mg=S) \times P(Vr=S)
+                \times P(Hp=S|Mg=S) \times P(Tp=S|Vr=S)}{P(Hp=S \land Tp=S)} \\
+            + \frac{P(Zb=S|Mg=S \land Vr=N) \times P(Mg=S) \times P(Vr=N)
+                \times P(Hp=S|Mg=S) \times P(Tp=S|Vr=N)}{P(Hp=S \land Tp=S)} \\
+            + \frac{P(Zb=S|Mg=N \land Vr=S) \times P(Mg=N) \times P(Vr=S)
+                \times P(Hp=S|Mg=N) \times P(Tp=S|Vr=S)}{P(Hp=S \land Tp=S)} \\
+            + \frac{P(Zb=S|Mg=N \land Vr=N) \times P(Mg=N) \times P(Vr=N)
+                \times P(Hp=S|Mg=N) \times P(Tp=S|Vr=N)}{P(Hp=S \land Tp=S)} \\
+            \,= \frac{0.6 \times 0.1 \times 0.2 \times 0.8 \times 0.3}
+                {P(Hp=S \land Tp=S)}
+            + \frac{0.5 \times 0.1 \times 0.8 \times 0.8 \times 0.1}
+                {P(Hp=S \land Tp=S)} \\
+            \qquad+ \frac{0.4 \times 0.9 \times 0.2 \times 0.7 \times 0.3}
+                {P(Hp=S \land Tp=S)}
+            + \frac{0.01 \times 0.9 \times 0.8 \times 0.7 \times 0.1}
+                {P(Hp=S \land Tp=S)} \\
+            \,= \frac{0.00288 + 0.0032 + 0.01512 + 0.000504}{0.0994}
+            = \frac{0.021704}{0.0994} = 0.21835010060 \approx 21.84\%
+        \end{gather*}
+\end{document}
