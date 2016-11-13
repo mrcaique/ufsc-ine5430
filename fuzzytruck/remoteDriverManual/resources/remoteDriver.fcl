@@ -1,0 +1,50 @@
+FUNCTION_BLOCK remoteDriver
+
+// Define input variables
+VAR_INPUT
+	x : REAL;
+	y : REAL;
+	angle : REAL;
+END_VAR
+
+// Define output variable
+VAR_OUTPUT
+	result : REAL;
+END_VAR
+
+FUZZIFY x
+	TERM tooLeft := (0, 1) (0.4, 0) ;
+	TERM good := (0.3, 0) (0.5,1) (0.7, 0);
+	TERM tooRight := (0.6, 0) (1, 1);
+END_FUZZIFY
+
+FUZZIFY y
+	TERM tooUp := (0, 1) (0.8, 0);
+	TERM good  := (0.7, 0) (1, 1);
+END_FUZZIFY
+
+FUZZIFY angle
+    TERM left  := (90, 0) (180, 1) (270, 0);
+    TERM right := (0, 1) (90, 0) (270, 0) (360, 1);
+    TERM up    := (0, 0) (90, 1) (180, 0);
+    TERM down  := (180, 0) (270, 1) (360, 0);
+END_FUZZIFY
+
+DEFUZZIFY result
+    TERM left  := (-1, 1) (0, 0);
+    TERM right := (0, 1) (1, 0);
+    TERM down := (-0.1, 0) (0, 1) (0.1, 0);
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+// Inference rules
+RULEBLOCK No1
+	AND : MIN;	// Use 'min' for 'and'
+
+	RULE 1 : IF x IS tooLeft AND angle IS right THEN result IS left;
+	RULE 2: IF x IS tooRight AND angle IS left THEN result IS right;
+	RULE 3: IF y IS tooUp AND angle IS up THEN result is down;
+	RULE 4: IF y IS tooUp AND x IS tooLeft AND angle IS down THEN result is down;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
