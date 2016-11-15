@@ -4,47 +4,170 @@ FUNCTION_BLOCK remoteDriver
 VAR_INPUT
 	x : REAL;
 	y : REAL;
-	angle : REAL;
+	direction : REAL;
 END_VAR
 
 // Define output variable
 VAR_OUTPUT
-	result : REAL;
+	angle : REAL;
 END_VAR
 
 FUZZIFY x
-	TERM tooLeft := (0, 1) (0.4, 0) ;
-	TERM good := (0.3, 0) (0.5,1) (0.7, 0);
-	TERM tooRight := (0.6, 0) (1, 1);
+	TERM tooLeft := (0, 1) (0.2, 1) (0.3, 0);
+	TERM left := (0.2, 0) (0.3, 1) (0.4, 1) (0.5, 0);
+	TERM half := (0.4, 0) (0.5, 1) (0.6, 0);
+	TERM right := (0.5, 0) (0.6, 1) (0.7, 1) (0.8, 0);
+	TERM tooRight := (0.7, 0) (0.8, 1) (1, 1);
 END_FUZZIFY
 
 FUZZIFY y
-	TERM tooUp := (0, 1) (0.8, 0);
-	TERM good  := (0.7, 0) (1, 1);
+	TERM up := (0, 1) (0.5, 1) (0.6, 0) (1, 0);
+	TERM half  := (0.4, 0) (0.5, 1) (0.7, 1) (0.8, 0) (1, 0);
+	TERM bottom  := (0.7, 0) (0.8, 1) (1, 1);
 END_FUZZIFY
 
-FUZZIFY angle
-    TERM left  := (90, 0) (180, 1) (270, 0);
-    TERM right := (0, 1) (90, 0) (270, 0) (360, 1);
-    TERM up    := (0, 0) (90, 1) (180, 0);
-    TERM down  := (180, 0) (270, 1) (360, 0);
+FUZZIFY direction
+    TERM left  := (90, 0) (91, 1) (269, 1) (270, 0);
+    TERM right := (0, 1) (89, 1) (90, 0) (270, 0) (271, 1) (360, 1);
+    TERM up    := (0, 1) (180, 1) (181, 0);
+    TERM down  := (180, 0) (181, 1) (270, 1) (359, 1) (360, 0);
 END_FUZZIFY
 
-DEFUZZIFY result
-    TERM left  := (-1, 1) (0, 0);
-    TERM right := (0, 1) (1, 0);
-    TERM down := (-0.1, 0) (0, 1) (0.1, 0);
-	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+DEFUZZIFY angle
+    TERM tooLeft  :=  (-1, 1) (-0.6, 1) (-0.5, 0);
+    TERM left     := (-0.6, 0) (-0.5, 1) (-0.3, 1) (-0.2, 0);
+    TERM center   := (-0.3, 0) (-0.2, 1) (0.2, 1) (0.3, 0);
+    TERM right    := (0.2, 0) (0.3, 1) (0.5, 1) (0.6, 0);
+    TERM tooRight := (0.5, 0) (0.6, 1) (1, 1);
+   	// METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;
 END_DEFUZZIFY
 
 // Inference rules
 RULEBLOCK No1
 	AND : MIN;	// Use 'min' for 'and'
-
-	RULE 1 : IF x IS tooLeft AND angle IS right THEN result IS left;
-	RULE 2: IF x IS tooRight AND angle IS left THEN result IS right;
-	RULE 3: IF y IS tooUp AND angle IS up THEN result is down;
-	RULE 4: IF y IS tooUp AND x IS tooLeft AND angle IS down THEN result is down;
+	// ACT : MIN;	// Use 'min' activation method
+	// ACCU : MAX;	// Use 'max' accumulation method4
+    RULE 1: IF x IS tooLeft AND y IS up AND direction IS left AND direction IS up THEN angle IS center;
+    RULE 2: IF x IS tooLeft AND y IS up AND direction IS left AND direction IS down THEN angle IS tooLeft;
+    RULE 3: IF x IS tooLeft AND y IS up AND direction IS left AND direction IS NOT up AND direction IS NOT down THEN angle IS left;
+    RULE 4: IF x IS tooLeft AND y IS up AND direction IS right AND direction IS up THEN angle IS tooRight;
+    RULE 5: IF x IS tooLeft AND y IS up AND direction IS right AND direction IS down THEN angle IS tooLeft;
+    RULE 6: IF x IS tooLeft AND y IS up AND direction IS right AND direction IS NOT up AND direction IS NOT down THEN angle IS tooRight;
+    RULE 7: IF x IS tooLeft AND y IS up AND direction IS up AND direction IS NOT left AND direction IS NOT right THEN angle IS right;
+    RULE 8: IF x IS tooLeft AND y IS up AND direction IS down AND direction IS NOT left AND direction IS NOT right THEN angle IS tooLeft;
+    RULE 9: IF x IS tooLeft AND y IS half AND direction IS left AND direction IS up THEN angle IS right;
+    RULE 10: IF x IS tooLeft AND y IS half AND direction IS left AND direction IS down THEN angle IS left;
+    RULE 11: IF x IS tooLeft AND y IS half AND direction IS left AND direction IS NOT up AND direction IS NOT down THEN angle IS center;
+    RULE 12: IF x IS tooLeft AND y IS half AND direction IS right AND direction IS up THEN angle IS tooRight;
+    RULE 13: IF x IS tooLeft AND y IS half AND direction IS right AND direction IS down THEN angle IS tooLeft;
+    RULE 14: IF x IS tooLeft AND y IS half AND direction IS right AND direction IS NOT up AND direction IS NOT down THEN angle IS tooLeft;
+    RULE 15: IF x IS tooLeft AND y IS half AND direction IS up AND direction IS NOT left AND direction IS NOT right THEN angle IS tooRight;
+    RULE 16: IF x IS tooLeft AND y IS half AND direction IS down AND direction IS NOT left AND direction IS NOT right THEN angle IS tooLeft;
+    RULE 17: IF x IS tooLeft AND y IS bottom AND direction IS left AND direction IS up THEN angle IS tooRight;
+    RULE 18: IF x IS tooLeft AND y IS bottom AND direction IS left AND direction IS down THEN angle IS center;
+    RULE 19: IF x IS tooLeft AND y IS bottom AND direction IS left AND direction IS NOT up AND direction IS NOT down THEN angle IS right;
+    RULE 20: IF x IS tooLeft AND y IS bottom AND direction IS right AND direction IS up THEN angle IS tooRight;
+    RULE 21: IF x IS tooLeft AND y IS bottom AND direction IS right AND direction IS down THEN angle IS tooRight;
+    RULE 22: IF x IS tooLeft AND y IS bottom AND direction IS right AND direction IS NOT up AND direction IS NOT down THEN angle IS tooRight;
+    RULE 23: IF x IS tooLeft AND y IS bottom AND direction IS up AND direction IS NOT left AND direction IS NOT right THEN angle IS tooLeft;
+    RULE 24: IF x IS tooLeft AND y IS bottom AND direction IS down AND direction IS NOT left AND direction IS NOT right THEN angle IS tooRight;
+    RULE 25: IF x IS left AND y IS up AND direction IS left AND direction IS up THEN angle IS center;
+    RULE 26: IF x IS left AND y IS up AND direction IS left AND direction IS down THEN angle IS left;
+    RULE 27: IF x IS left AND y IS up AND direction IS left AND direction IS NOT up AND direction IS NOT down THEN angle IS center;
+    RULE 28: IF x IS left AND y IS up AND direction IS right AND direction IS up THEN angle IS right;
+    RULE 29: IF x IS left AND y IS up AND direction IS right AND direction IS down THEN angle IS tooRight;
+    RULE 30: IF x IS left AND y IS up AND direction IS right AND direction IS NOT up AND direction IS NOT down THEN angle IS right;
+    RULE 31: IF x IS left AND y IS up AND direction IS up AND direction IS NOT left AND direction IS NOT right THEN angle IS right;
+    RULE 32: IF x IS left AND y IS up AND direction IS down AND direction IS NOT left AND direction IS NOT right THEN angle IS right;
+    RULE 33: IF x IS left AND y IS half AND direction IS left AND direction IS up THEN angle IS left;
+    RULE 34: IF x IS left AND y IS half AND direction IS left AND direction IS down THEN angle IS left;
+    RULE 35: IF x IS left AND y IS half AND direction IS left AND direction IS NOT up AND direction IS NOT down THEN angle IS center;
+    RULE 36: IF x IS left AND y IS half AND direction IS right AND direction IS up THEN angle IS tooRight;
+    RULE 37: IF x IS left AND y IS half AND direction IS right AND direction IS down THEN angle IS tooRight;
+    RULE 38: IF x IS left AND y IS half AND direction IS right AND direction IS NOT up AND direction IS NOT down THEN angle IS tooRight;
+    RULE 39: IF x IS left AND y IS half AND direction IS up AND direction IS NOT left AND direction IS NOT right THEN angle IS right;
+    RULE 40: IF x IS left AND y IS half AND direction IS down AND direction IS NOT left AND direction IS NOT right THEN angle IS right;
+    RULE 41: IF x IS left AND y IS bottom AND direction IS left AND direction IS up THEN angle IS right;
+    RULE 42: IF x IS left AND y IS bottom AND direction IS left AND direction IS down THEN angle IS center;
+    RULE 43: IF x IS left AND y IS bottom AND direction IS left AND direction IS NOT up AND direction IS NOT down THEN angle IS center;
+    RULE 44: IF x IS left AND y IS bottom AND direction IS right AND direction IS up THEN angle IS right;
+    RULE 45: IF x IS left AND y IS bottom AND direction IS right AND direction IS down THEN angle IS center;
+    RULE 46: IF x IS left AND y IS bottom AND direction IS right AND direction IS NOT up AND direction IS NOT down THEN angle IS right;
+    RULE 47: IF x IS left AND y IS bottom AND direction IS up AND direction IS NOT left AND direction IS NOT right THEN angle IS right;
+    RULE 48: IF x IS left AND y IS bottom AND direction IS down AND direction IS NOT left AND direction IS NOT right THEN angle IS right;
+    RULE 49: IF x IS half AND y IS up AND direction IS left AND direction IS up THEN angle IS left;
+    RULE 50: IF x IS half AND y IS up AND direction IS left AND direction IS down THEN angle IS tooLeft;
+    RULE 51: IF x IS half AND y IS up AND direction IS left AND direction IS NOT up AND direction IS NOT down THEN angle IS tooLeft;
+    RULE 52: IF x IS half AND y IS up AND direction IS right AND direction IS up THEN angle IS right;
+    RULE 53: IF x IS half AND y IS up AND direction IS right AND direction IS down THEN angle IS tooRight;
+    RULE 54: IF x IS half AND y IS up AND direction IS right AND direction IS NOT up AND direction IS NOT down THEN angle IS tooRight;
+    RULE 55: IF x IS half AND y IS up AND direction IS up AND direction IS NOT left AND direction IS NOT right THEN angle IS center;
+    RULE 56: IF x IS half AND y IS up AND direction IS down AND direction IS NOT left AND direction IS NOT right THEN angle IS tooLeft;
+    RULE 57: IF x IS half AND y IS half AND direction IS left AND direction IS up THEN angle IS left;
+    RULE 58: IF x IS half AND y IS half AND direction IS left AND direction IS down THEN angle IS left;
+    RULE 59: IF x IS half AND y IS half AND direction IS left AND direction IS NOT up AND direction IS NOT down THEN angle IS left;
+    RULE 60: IF x IS half AND y IS half AND direction IS right AND direction IS up THEN angle IS right;
+    RULE 61: IF x IS half AND y IS half AND direction IS right AND direction IS down THEN angle IS right;
+    RULE 62: IF x IS half AND y IS half AND direction IS right AND direction IS NOT up AND direction IS NOT down THEN angle IS right;
+    RULE 63: IF x IS half AND y IS half AND direction IS up AND direction IS NOT left AND direction IS NOT right THEN angle IS center;
+    RULE 64: IF x IS half AND y IS half AND direction IS down AND direction IS NOT left AND direction IS NOT right THEN angle IS tooLeft;
+    RULE 65: IF x IS half AND y IS bottom AND direction IS left AND direction IS up THEN angle IS tooLeft;
+    RULE 66: IF x IS half AND y IS bottom AND direction IS left AND direction IS down THEN angle IS tooLeft;
+    RULE 67: IF x IS half AND y IS bottom AND direction IS left AND direction IS NOT up AND direction IS NOT down THEN angle IS left;
+    RULE 68: IF x IS half AND y IS bottom AND direction IS right AND direction IS up THEN angle IS right;
+    RULE 69: IF x IS half AND y IS bottom AND direction IS right AND direction IS down THEN angle IS tooRight;
+    RULE 70: IF x IS half AND y IS bottom AND direction IS right AND direction IS NOT up AND direction IS NOT down THEN angle IS right;
+    RULE 71: IF x IS half AND y IS bottom AND direction IS up AND direction IS NOT left AND direction IS NOT right THEN angle IS center;
+    RULE 72: IF x IS half AND y IS bottom AND direction IS down AND direction IS NOT left AND direction IS NOT right THEN angle IS tooLeft;
+    RULE 73: IF x IS right AND y IS up AND direction IS left AND direction IS up THEN angle IS tooLeft;
+    RULE 74: IF x IS right AND y IS up AND direction IS left AND direction IS down THEN angle IS tooLeft;
+    RULE 75: IF x IS right AND y IS up AND direction IS left AND direction IS NOT up AND direction IS NOT down THEN angle IS tooLeft;
+    RULE 76: IF x IS right AND y IS up AND direction IS right AND direction IS up THEN angle IS center;
+    RULE 77: IF x IS right AND y IS up AND direction IS right AND direction IS down THEN angle IS right;
+    RULE 78: IF x IS right AND y IS up AND direction IS right AND direction IS NOT up AND direction IS NOT down THEN angle IS center;
+    RULE 79: IF x IS right AND y IS up AND direction IS up AND direction IS NOT left AND direction IS NOT right THEN angle IS left;
+    RULE 80: IF x IS right AND y IS up AND direction IS down AND direction IS NOT left AND direction IS NOT right THEN angle IS tooLeft;
+    RULE 81: IF x IS right AND y IS half AND direction IS left AND direction IS up THEN angle IS tooLeft;
+    RULE 82: IF x IS right AND y IS half AND direction IS left AND direction IS down THEN angle IS tooLeft;
+    RULE 83: IF x IS right AND y IS half AND direction IS left AND direction IS NOT up AND direction IS NOT down THEN angle IS tooLeft;
+    RULE 84: IF x IS right AND y IS half AND direction IS right AND direction IS up THEN angle IS center;
+    RULE 85: IF x IS right AND y IS half AND direction IS right AND direction IS down THEN angle IS right;
+    RULE 86: IF x IS right AND y IS half AND direction IS right AND direction IS NOT up AND direction IS NOT down THEN angle IS center;
+    RULE 87: IF x IS right AND y IS half AND direction IS up AND direction IS NOT left AND direction IS NOT right THEN angle IS left;
+    RULE 88: IF x IS right AND y IS half AND direction IS down AND direction IS NOT left AND direction IS NOT right THEN angle IS tooRight;
+    RULE 89: IF x IS right AND y IS bottom AND direction IS left AND direction IS up THEN angle IS left;
+    RULE 90: IF x IS right AND y IS bottom AND direction IS left AND direction IS down THEN angle IS left;
+    RULE 91: IF x IS right AND y IS bottom AND direction IS left AND direction IS NOT up AND direction IS NOT down THEN angle IS tooLeft;
+    RULE 92: IF x IS right AND y IS bottom AND direction IS right AND direction IS up THEN angle IS left;
+    RULE 93: IF x IS right AND y IS bottom AND direction IS right AND direction IS down THEN angle IS center;
+    RULE 94: IF x IS right AND y IS bottom AND direction IS right AND direction IS NOT up AND direction IS NOT down THEN angle IS center;
+    RULE 95: IF x IS right AND y IS bottom AND direction IS up AND direction IS NOT left AND direction IS NOT right THEN angle IS tooLeft;
+    RULE 96: IF x IS right AND y IS bottom AND direction IS down AND direction IS NOT left AND direction IS NOT right THEN angle IS tooLeft;
+    RULE 97: IF x IS tooRight AND y IS up AND direction IS left AND direction IS up THEN angle IS tooLeft;
+    RULE 98: IF x IS tooRight AND y IS up AND direction IS left AND direction IS down THEN angle IS tooLeft;
+    RULE 99: IF x IS tooRight AND y IS up AND direction IS left AND direction IS NOT up AND direction IS NOT down THEN angle IS tooLeft;
+    RULE 100: IF x IS tooRight AND y IS up AND direction IS right AND direction IS up THEN angle IS center;
+    RULE 101: IF x IS tooRight AND y IS up AND direction IS right AND direction IS down THEN angle IS right;
+    RULE 102: IF x IS tooRight AND y IS up AND direction IS right AND direction IS NOT up AND direction IS NOT down THEN angle IS center;
+    RULE 103: IF x IS tooRight AND y IS up AND direction IS up AND direction IS NOT left AND direction IS NOT right THEN angle IS left;
+    RULE 104: IF x IS tooRight AND y IS up AND direction IS down AND direction IS NOT left AND direction IS NOT right THEN angle IS tooLeft;
+    RULE 105: IF x IS tooRight AND y IS half AND direction IS left AND direction IS up THEN angle IS tooLeft;
+    RULE 106: IF x IS tooRight AND y IS half AND direction IS left AND direction IS down THEN angle IS tooRight;
+    RULE 107: IF x IS tooRight AND y IS half AND direction IS left AND direction IS NOT up AND direction IS NOT down THEN angle IS tooLeft;
+    RULE 108: IF x IS tooRight AND y IS half AND direction IS right AND direction IS up THEN angle IS center;
+    RULE 109: IF x IS tooRight AND y IS half AND direction IS right AND direction IS down THEN angle IS left;
+    RULE 110: IF x IS tooRight AND y IS half AND direction IS right AND direction IS NOT up AND direction IS NOT down THEN angle IS center;
+    RULE 111: IF x IS tooRight AND y IS half AND direction IS up AND direction IS NOT left AND direction IS NOT right THEN angle IS left;
+    RULE 112: IF x IS tooRight AND y IS half AND direction IS down AND direction IS NOT left AND direction IS NOT right THEN angle IS tooRight;
+    RULE 113: IF x IS tooRight AND y IS bottom AND direction IS left AND direction IS up THEN angle IS tooLeft;
+    RULE 114: IF x IS tooRight AND y IS bottom AND direction IS left AND direction IS down THEN angle IS tooRight;
+    RULE 115: IF x IS tooRight AND y IS bottom AND direction IS left AND direction IS NOT up AND direction IS NOT down THEN angle IS tooLeft;
+    RULE 116: IF x IS tooRight AND y IS bottom AND direction IS right AND direction IS up THEN angle IS left;
+    RULE 117: IF x IS tooRight AND y IS bottom AND direction IS right AND direction IS down THEN angle IS center;
+    RULE 118: IF x IS tooRight AND y IS bottom AND direction IS right AND direction IS NOT up AND direction IS NOT down THEN angle IS center;
+    RULE 119: IF x IS tooRight AND y IS bottom AND direction IS up AND direction IS NOT left AND direction IS NOT right THEN angle IS tooRight;
+    RULE 120: IF x IS tooRight AND y IS bottom AND direction IS down AND direction IS NOT left AND direction IS NOT right THEN angle IS left;
 END_RULEBLOCK
 
 END_FUNCTION_BLOCK
