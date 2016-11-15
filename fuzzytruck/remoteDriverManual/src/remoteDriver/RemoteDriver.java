@@ -1,6 +1,7 @@
 package remoteDriver;
 
 import net.sourceforge.jFuzzyLogic.FIS;
+import net.sourceforge.jFuzzyLogic.rule.Rule;
 import net.sourceforge.jFuzzyLogic.rule.Variable;
 
 import java.io.BufferedReader;
@@ -57,35 +58,27 @@ public class RemoteDriver {
 
         	System.out.println("x: " + x + " y: " + y + " angle: " + angle);
         	
-        	/////////////////////////////////////////////////////////////////////////////////////
-        	// TODO sua lógica fuzzy vai aqui use os valores de x,y e angle obtidos. x e y estao em [0,1] e angulo [0,360)
-        	
-        	
-        	
-			
-        	// double teste = Double.valueOf(stdIn.readLine());
-
-
-
             // Set inputs
             fis.setVariable("x", x);
             fis.setVariable("y", y);
-            fis.setVariable("angle", angle);
+            fis.setVariable("direction", angle);
 
             // Evaluate
             fis.evaluate();
 
-            Variable result = fis.getVariable("result");
-        	
-        	
-        	double respostaDaSuaLogica = result.getValue(); // atribuir um valor entre -1 e 1 para virar o volante pra esquerda ou direita.
-            if (respostaDaSuaLogica == result.getUniverseMax()) {
-                respostaDaSuaLogica = 1;
-            }
-            if (respostaDaSuaLogica == result.getUniverseMin()) {
-                respostaDaSuaLogica = -1;
-            }
+
+        	double respostaDaSuaLogica = fis.getVariable("angle").getValue(); // atribuir um valor entre -1 e 1 para virar o volante pra esquerda ou direita.
+
         	System.out.printf("Command sent: %f\n", respostaDaSuaLogica);
+
+            // Show each rule (and degree of support)
+            for( Rule r : fis.getFunctionBlock("remoteDriver").getFuzzyRuleBlock("No1").getRules() ) {
+                if (r.getDegreeOfSupport() == 0.0) {
+                    continue;
+                }
+                System.out.println(r);
+            }
+            System.out.println("----------------------------");
         	
         	///////////////////////////////////////////////////////////////////////////////// Acaba sua modificacao aqui
         	// envio da acao do volante
