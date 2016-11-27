@@ -8,12 +8,14 @@ from sklearn.metrics import confusion_matrix
 SEED = 42
 TRAIN_DATA = 0.75
 
+
 def display_digit(csv, column):
     data = csv[:-1]
     raw_number = np.copy(data[:, column])
     write_digit = np.reshape(raw_number, (20, 20), 'F')
     plt.imshow(write_digit, cmap='gray')
     plt.show()
+
 
 def read_csv(file):
     return np.genfromtxt(file, delimiter=',')
