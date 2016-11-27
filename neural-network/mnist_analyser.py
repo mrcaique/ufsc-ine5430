@@ -1,3 +1,4 @@
+from __future__ import print_function
 import numpy as np
 import matplotlib.pyplot as plt
 from random import Random
@@ -23,7 +24,10 @@ data = csv_raw[:-1].transpose()
 total_pop = len(expected)
 
 rand = Random()
-rand.seed(SEED, 2) # Seed 1
+try:
+    rand.seed(SEED, 1)
+except TypeError:
+    rand.seed(SEED)
 
 train_indexes = []
 for digit in sorted(set(expected)):
