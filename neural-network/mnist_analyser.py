@@ -51,8 +51,9 @@ print("Total train data selected: {}\nTotal test data selected: {}".\
         format(len(train_indexes), len(test_indexes)))
 
 clf = MLPClassifier(
-    hidden_layer_sizes=(100, 100, 100, 50), learning_rate_init=0.0035,
-    learning_rate='adaptive', solver='sgd', activation='relu', verbose=True
+    hidden_layer_sizes=(100, 100), learning_rate_init=0.0035,
+    learning_rate='adaptive', solver='lbfgs', activation='logistic',
+    verbose=True
 )
 
 clf.fit(data[train_indexes], expected[train_indexes])
