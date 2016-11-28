@@ -1,4 +1,5 @@
 from __future__ import print_function
+import itertools
 import numpy as np
 import matplotlib.pyplot as plt
 from random import Random
@@ -15,12 +16,41 @@ def display_digit(csv, column):
     write_digit = np.reshape(raw_number, (20, 20), 'F')
     plt.imshow(write_digit, cmap='gray')
     plt.show()
+    return
 
 
-def read_csv(file):
+def read_csv(file='exdata.csv'):
     return np.genfromtxt(file, delimiter=',')
 
-csv_raw = read_csv('exdata.csv')
+
+def plot_confusion_matrix(
+        conf_mat, names=[], title='Confusion Matrix',
+        img=False, cmap=plt.cm.Blues):
+    if not img:
+        print("{}:\n {}".format(title, conf_mat))
+        return
+    else:
+        plt.imshow(conf_mat, interpolation='nearest', cmap=cmap)
+        plt.title(title)
+        plt.colorbar()
+        plt.xticks(names)
+        plt.yticks(names)
+
+        mid = conf_mat.max() / 2.
+        for i, j in itertools.product(
+                range(conf_mat.shape[0]),
+                range(conf_mat.shape[1])):
+            plt.text(j, i, conf_mat[i, j],
+                horizontalalignment="center",
+                color="white" if conf_mat[i, j] > mid else "black")
+
+        plt.tight_layout()
+        plt.ylabel('True label')
+        plt.xlabel('Predicted label')
+        plt.show()
+        return
+
+csv_raw = read_csv()
 expected = csv_raw[-1]
 data = csv_raw[:-1].transpose()
 total_pop = len(expected)
@@ -59,9 +89,9 @@ clf = MLPClassifier(
 clf.fit(data[train_indexes], expected[train_indexes])
 predicted = clf.predict(data[test_indexes])
 
-conf_mat = "Confusion Matrix:\n {}". \
-    format(confusion_matrix(expected[test_indexes], predicted))
 hit = clf.score(data[test_indexes], expected[test_indexes])
-print(conf_mat)
 print("Hit Rate: {}".format(hit))
 print("Miss Rate: {}".format(1 - hit))
+
+conf_mat = confusion_matrix(expected[test_indexes], predicted)
+plot_confusion_matrix(conf_mat)
