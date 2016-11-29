@@ -1,8 +1,8 @@
 from __future__ import print_function
-import itertools
 import numpy as np
 import matplotlib.pyplot as plt
 from random import Random
+from itertools import product
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import confusion_matrix
 
@@ -37,7 +37,7 @@ def plot_confusion_matrix(
         plt.yticks(names)
 
         mid = conf_mat.max() / 2.
-        for i, j in itertools.product(
+        for i, j in product(
                 range(conf_mat.shape[0]),
                 range(conf_mat.shape[1])):
             plt.text(j, i, conf_mat[i, j],
@@ -49,6 +49,27 @@ def plot_confusion_matrix(
         plt.xlabel('Predicted label')
         plt.show()
         return
+
+
+def display_trained_predicted(data, expected, predicted, test_indexes):
+    imgs_and_labels = list(zip(data, expected))
+    for index, (image, label) in enumerate(imgs_and_labels[:4]):
+        plt.subplot(2, 4, index + 1)
+        plt.axis('off')
+        img = np.reshape(image, (20, 20), 'F')
+        plt.imshow(img, cmap=plt.cm.gray_r, interpolation='nearest')
+        plt.title('Training: {}'.format(label if label != 10 else 0.0))
+
+    imgs_and_prdcts = list(zip(data[test_indexes], predicted))
+    for index, (image, prediction) in enumerate(imgs_and_prdcts[:4]):
+        plt.subplot(2, 4, index + 5)
+        plt.axis('off')
+        img = np.reshape(image, (20, 20), 'F')
+        plt.imshow(img, cmap=plt.cm.gray_r, interpolation='nearest')
+        plt.title('Prediction: {}'.format(prediction if prediction != 10 else 0.0))
+
+    plt.show()
+    return
 
 csv_raw = read_csv()
 expected = csv_raw[-1]
