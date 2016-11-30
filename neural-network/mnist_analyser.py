@@ -30,6 +30,7 @@ def plot_confusion_matrix(
         print("{}:\n {}".format(title, conf_mat))
         return
     else:
+        plt.figure(1)
         plt.imshow(conf_mat, interpolation='nearest', cmap=cmap)
         plt.title(title)
         plt.colorbar()
@@ -47,12 +48,12 @@ def plot_confusion_matrix(
         plt.tight_layout()
         plt.ylabel('True label')
         plt.xlabel('Predicted label')
-        plt.show()
-        return
+    return
 
 
 def display_trained_predicted(data, expected, predicted, test_indexes):
     imgs_and_labels = list(zip(data, expected))
+    plt.figure(2)
     for index, (image, label) in enumerate(imgs_and_labels[:4]):
         plt.subplot(2, 4, index + 1)
         plt.axis('off')
@@ -115,4 +116,7 @@ print("Hit Rate: {}".format(hit))
 print("Miss Rate: {}".format(1 - hit))
 
 conf_mat = confusion_matrix(expected[test_indexes], predicted)
-plot_confusion_matrix(conf_mat)
+
+yxnames = [i for i in range(10)]
+plot_confusion_matrix(conf_mat, names=yxnames, img=True)
+display_trained_predicted(data, expected, predicted, test_indexes)
