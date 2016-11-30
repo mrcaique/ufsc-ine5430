@@ -21,16 +21,16 @@
     \section*{Introdução}
         A base para a execução deste trabalho está no uso de conceitos do
         sistema \textit{fuzzy} ou sistema nebuloso, composto de lógica
-        \textit{fuzzy} e conjunto \textit{fuzzy}. O estudo de conjuntos
+        \textit{fuzzy} e de conjunto \textit{fuzzy}. O estudo de conjuntos
         \textit{fuzzy} foi introduzido por Lofti Zadeh, em 1965, e é uma
         extensão da teoria de conjuntos clássica. A lógica \textit{fuzzy} é uma
-        lógica multi-valorada onde a informação, ao contrário da lógica
+        lógica multivalorada onde a informação, ao contrário da lógica
         booleana, não é atribuída a um ou zero, mas podendo estar entre esses
         dois valores.
         
         O cerne do raciocínio \textit{fuzzy} é da transformação de informações
         linguísticas (podendo ser dúbias e vagas) em valores numéricos para que
-        possam ser  trabalhadas matematicamente e computacionalmente, depois, é
+        possam ser trabalhadas matematicamente e computacionalmente, depois, é
         realizado o inverso para que as soluções sejam avaliadas.
     
     \section*{O sistema}
@@ -47,35 +47,31 @@
         angulo atual no qual o caminhão se encontra). A partir desses dados, um
         ângulo é gerado como saída, mostrando qual o angulo do volante do
         caminhão deve ser modificado antes de executar o próximo movimento a
-        ré, num intervalo que vai de -30º até 30º. Outro ponto a notar é a
-        delimitação das variáveis: os eixos $x$ e $y$ estão limitados ao
-        intervalo $(0, 1)$; as direções envolvem cima, baixo, esquerda,
-        direita, diagonais superiores esquerda e direta e diagonais inferiores
-        esquerda e direita, e são definidas a partir de seus valores
-        respectivos em uma escala de 0$^\circ$ a 360$^\circ$; Já o ângulo é
-        delimitado de -30$^\circ$ até 30$^\circ$, embora seja enviado para o
-        servidor como um intervalo que vai de -1 a 1.
-        
-        Como esses intervalos fazem parte do funcionamento do sistema, vamos,
-        abaixo, especificar e listar as condições que classificam um
-        determinado valor fornecido pelo servidor dado em um termo que pode ser
-        usado numa regra de forma mais simples. Segue a lista:
-        
+        ré, num intervalo que vai de -30$^\circ$ até 30$^\circ$. Outro ponto a
+        notar é a delimitação das variáveis: os eixos $x$ e $y$ estão limitados
+        ao intervalo $(0, 1)$; as direções envolvem cima, baixo, esquerda e
+        direita e são definidas a partir de seus valores respectivos em uma
+        escala de 0$^\circ$ a 360$^\circ$; Já o ângulo é delimitado de
+        -30$^\circ$ até 30$^\circ$, embora seja enviado para o servidor como um
+        intervalo que vai de -1 a 1. Como esses intervalos fazem parte do
+        funcionamento do sistema, vamos especificar e listar as condições que
+        classificam um determinado valor fornecido pelo servidor dado em um
+        termo que pode ser usado numa regra de forma mais simples. Segue a
+        lista:
         \begin{itemize}
             \item \textbf{X}
                 \begin{itemize}
                     \item \texttt{\textbf{tooLeft}} - Intervalo entre 0 e 0.3;
-                    \item \texttt{\textbf{left}} - Intervalo entre 0.2 e 0.5;
+                    \item \texttt{\textbf{left}} - Intervalo entre 0.1 e 0.5;
                     \item \texttt{\textbf{half}} - Intervalo entre 0.4 e 0.6;
-                    \item \texttt{\textbf{right}} - Intervalo entre 0.5 e 0.8;
+                    \item \texttt{\textbf{right}} - Intervalo entre 0.5 e 0.9;
                     \item \texttt{\textbf{tooRight}} - Intervalo entre 0.7 e 1.
                 \end{itemize}
             
             \item Y 
                 \begin{itemize}
-                    \item \texttt{\textbf{up}} - Intervalo entre 0 e 0.6;
-                    \item \texttt{\textbf{half}} - Intervalo entre 0.4 e 0.8;
-                    \item \texttt{\textbf{bottom}} - Intervalo entre 0.7 e 1.
+                    \item \texttt{\textbf{up}} - Intervalo entre 0 e 0.8;
+                    \item \texttt{\textbf{bottom}} - Intervalo entre 0.5 e 1.
                 \end{itemize}
 
             \item Direção (\texttt{direction}, no código)
@@ -95,46 +91,46 @@
         \begin{itemize}
             \item Ângulo (\texttt{angle}, no código)
             \begin{itemize}
-                    \item \texttt{\textbf{tooLeft}} - Intervalo entre -1 e -0.5;
-                    \item \texttt{\textbf{left}} - Intervalo entre -0.6 e -0.2;
-                    \item \texttt{\textbf{center}} - Intervalo entre -0.3 a 0.3;
-                    \item \texttt{\textbf{right}} - Intervalo entre 0.2 e 0.6;
-                    \item \texttt{\textbf{tooRight}} - Intervalo entre 0.5 a 1.
+                \item \texttt{\textbf{tooLeft}} - Intervalo entre -1 e -0.4;
+                \item \texttt{\textbf{left}} - Intervalo entre -0.8 e -0.2;
+                \item \texttt{\textbf{center}} - Intervalo entre -0.4 a 0.4;
+                \item \texttt{\textbf{right}} - Intervalo entre 0.2 e 0.8;
+                \item \texttt{\textbf{tooRight}} - Intervalo entre 0.4 a 1.
             \end{itemize}
         \end{itemize}
     
     \subsection*{Regras}
         A partir das definições especificadas na seção anterior, uma série de
-        120 regras são definidas para determinar qual caminho o caminhão deve
+        40 regras são definidas para determinar qual caminho o caminhão deve
         percorrer. Todas as regras são condicionais (\texttt{IF, THEN}), sendo
-        que dados os $x$, $y$ e duas direções (para tratar casos onde o
-        caminhão está na diagonal), então o ângulo do volante deve ser uma das
-        cinco posições especificadas na listagem especificada anteriormente e
-        são aplicados cálculos de lógica \textit{fuzzy} para encontrar o valor
-        que será retornado. Alguns exemplos dessas regras são encontrados
-        abaixo:
+        que dados os $x$, $y$ e a direção, então o ângulo do volante deve ser
+        uma das cinco posições especificadas na listagem anterior e são
+        aplicados cálculos de lógica \textit{fuzzy} para encontrar o valor que
+        será retornado. Alguns exemplos dessas regras são encontrados abaixo:
         
-        \begin{tabular}{c c c c c}
-            \hline
-             x & y & direction & direction & angle \\
-             tooLeft & up & left & up & center \\
-             tooLeft & up & left & down & tooLeft \\
-             ... & ... & ... & ... & ... \\
-             left & up & up & direction IS NOT left AND direction IS NOT right & center \\
-             
-            \hline
-        \end{tabular}
+        \begin{center}
+            \begin{tabular}{c c c c c}
+                \hline
+                 x & y & direction & angle \\
+                 tooLeft & up & left & tooLeft \\
+                 tooLeft & up & right & tooRight \\
+                 ... & ... & ... & ... \\
+                 tooRight & bottom & down & tooRight \\
+                 
+                \hline
+            \end{tabular}
+        \end{center}
         
-        Note que os exemplos acima são apenas uma pequena amostra das 120
-        regras definidas, que não serão todas apresentadas aqui devido à sua
-        extensão. 
-        
+        Note que os exemplos acima são apenas uma pequena amostra das 40 regras
+        definidas, que não serão todas apresentadas aqui devido à sua extensão.
+        Todas as regras podem ser vistas no arquivo \texttt{remoteDriver.fcl}.
+
     \subsection*{Método de defuzzificação}
         Defuzzificação transforma os valores de entrada numa variável de saída
         que é interpretada pelo programa para qual a angulação do volante que
         deve estar, partindo do ponto e da direção iniciais. Essa transformação
         é através de alguma transformação numérica, o método aqui utilizado é o
-        mais tradicional método de defuzzificação: o cálculo do centroide (ou
+        mais tradicional de defuzzificação: o cálculo do centroide (ou
         baricentro). O método envolve o cálculo do ponto central da função
         \textit{fuzzy} de saída baseando-se nas operações feitas sobre os
         parâmetros de entrada, tal ponto indica a angulação do volante que o
@@ -144,17 +140,16 @@
         Dependendo dos parâmetros $x$, $y$ e do ângulo com o qual o programa é
         iniciado, é possível encontrar pontos em que o programa simplesmente
         não consegue responder com as direções para que o caminhão estacione
-        corretamente. Em alguns pontos, o caminhão consegue estacionar
-        corretamente, outras vezes, ele acaba indo mais para a esquerda ou mais
-        para a direita, errando o alvo.
+        corretamente. Em alguns pontos, o caminhão consegue estacionar, outras
+        vezes, ele acaba indo mais para a esquerda ou mais para a direita,
+        errando o alvo, mas ainda assim chegando bem próximo ao esperado. 
         
-        Um meio de contornar o problema foi a especificação das direções, para
-        incluir também as diagonais, o que resultou em um conjunto de 120
-        regras. Melhorou os casos, o caminhão consegue estacionar na vaga,
-        dados $x$, $y$ e direção iniciais, quando antes não conseguia,
-        entretanto, há casos em que ele ainda não estaciona corretamente,
-        chegando bem próximo da vaga (indo levemente ou mais à esquerda ou
-        direita) ou estacionando na vaga de forma incorreta (estacionando
-        horizontalmente à vaga).
-
+        Como são poucos casos em que isso ocorre, acreditamos que se trata
+        apenas de uma questão simples de probabilidade proporcionado pela
+        lógica \textit{fuzzy} e, portanto, acreditamos que é um problema
+        aceitável dado a natureza probabilística deste trabalho. As condições
+        em que o caminhão estaciona erroneamente acontece com mais frequência
+        nas regiões de baixo, visto que o caminhão não consegue espaço o
+        suficiente para conseguir virar em direção ao estacionamento.
+        
 \end{document}
