@@ -30,17 +30,23 @@ public class RemoteDriver {
             System.err.println("Can't load file");
             return;
         }
- 
-        try {
-            kkSocket = new Socket(host, port);
-            out = new PrintWriter(kkSocket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));
-        } catch (UnknownHostException e) {
-            System.err.println("Don't know about host:"  + host);
-            System.exit(1);
-        } catch (IOException e) {
-            System.err.println("Couldn't get I/O for the connection to: " + host);
-            System.exit(1);
+        while (out == null && in == null) {
+            try {
+                kkSocket = new Socket(host, port);
+                out = new PrintWriter(kkSocket.getOutputStream(), true);
+                in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));
+                break;
+            } catch (UnknownHostException e) {
+                System.err.println("Don't know about host:" + host);
+            } catch (IOException e) {
+                System.err.println("Couldn't get I/O for the connection to: " + host);
+            }
+            try {
+                Thread.sleep(1000);
+            } catch(InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
         }
  
         String fromServer;
