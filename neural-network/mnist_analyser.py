@@ -29,26 +29,24 @@ def plot_confusion_matrix(
     if not img:
         print("{}:\n {}".format(title, conf_mat))
         return
-    else:
-        plt.figure(1)
-        plt.imshow(conf_mat, interpolation='nearest', cmap=cmap)
-        plt.title(title)
-        plt.colorbar()
-        plt.xticks(names)
-        plt.yticks(names)
+    plt.figure(1)
+    plt.imshow(conf_mat, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    plt.xticks(names)
+    plt.yticks(names)
 
-        mid = conf_mat.max() / 2.
-        for i, j in product(
-                range(conf_mat.shape[0]),
-                range(conf_mat.shape[1])):
-            plt.text(j, i, conf_mat[i, j],
-                horizontalalignment="center",
-                color="white" if conf_mat[i, j] > mid else "black")
+    mid = conf_mat.max() / 2.
+    for i, j in product(
+            range(conf_mat.shape[0]),
+            range(conf_mat.shape[1])):
+        plt.text(j, i, conf_mat[i, j],
+            horizontalalignment="center",
+            color="white" if conf_mat[i, j] > mid else "black")
 
-        plt.tight_layout()
-        plt.ylabel('True label')
-        plt.xlabel('Predicted label')
-    return
+    plt.tight_layout()
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
 
 
 def display_trained_predicted(data, expected, predicted, test_indexes):
@@ -70,7 +68,6 @@ def display_trained_predicted(data, expected, predicted, test_indexes):
         plt.title('Prediction: {}'.format(prediction if prediction != 10 else 0.0))
 
     plt.show()
-    return
 
 csv_raw = read_csv()
 expected = csv_raw[-1]
