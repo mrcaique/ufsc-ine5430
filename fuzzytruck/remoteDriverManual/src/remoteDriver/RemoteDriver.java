@@ -2,7 +2,6 @@ package remoteDriver;
 
 import net.sourceforge.jFuzzyLogic.FIS;
 import net.sourceforge.jFuzzyLogic.rule.Rule;
-import net.sourceforge.jFuzzyLogic.rule.Variable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Locale;
 import java.util.StringTokenizer;
  
 public class RemoteDriver {
@@ -53,7 +53,7 @@ public class RemoteDriver {
  
         double x, y;
         double angle;
-        
+
         // requisicao da posicao do caminhao
         out.println("r");
         while ((fromServer = in.readLine()) != null) {
@@ -63,6 +63,7 @@ public class RemoteDriver {
         	angle = Double.valueOf(st.nextToken()).doubleValue();
 
         	System.out.println("x: " + x + " y: " + y + " angle: " + angle);
+            System.out.printf(Locale.ENGLISH, "To see graphics, run in the project folder: java -jar lib/jFuzzyLogic.jar -e resources/remoteDriver.fcl %f %f %f\n", angle, x, y);
         	
             // Set inputs
             fis.setVariable("x", x);
