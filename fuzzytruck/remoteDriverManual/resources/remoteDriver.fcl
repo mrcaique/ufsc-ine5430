@@ -35,7 +35,7 @@ END_FUZZIFY
 DEFUZZIFY angle
     TERM tooLeft  :=  (-1, 1) (-0.4, 0);
     TERM left     := (-0.8, 0) (-0.6, 1) (-0.2, 0);
-    TERM center   := (-0.4, 0) (-0.2, 1) (0.2, 1) (0.4, 0);
+    TERM center   := (-0.4, 0) (0, 1) (0.4, 0);
     TERM right    := (0.2, 0) (0.6, 1) (0.8, 0);
     TERM tooRight := (0.4, 0) (1, 1);
    	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
