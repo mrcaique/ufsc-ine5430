@@ -1,0 +1,137 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage[a4paper, left=20mm, right=20mm, top=20mm, bottom=20mm]{geometry}
+\usepackage[colorlinks, urlcolor=blue, citecolor=red]{hyperref}
+
+
+\title{\textbf{Atividade T2 - INE5430 - Inteligência Artificial}}
+\author{
+    Caique Rodrigues Marques \\
+    {\texttt{c.r.marques@grad.ufsc.br}}
+    \and
+    Fernando Jorge Mota \\
+    {\texttt{contato@fjorgemota.com}}
+    \vspace{-5mm}
+}
+\date{09 de setembro de 2016}
+
+\begin{document}
+
+\maketitle
+
+\section*{Questão 1}
+    Desde o início da ciência e da filosofia, houve a dúvida de como o
+    conhecimento é e poderia ser moldado. Em 1957 surge o conceito de redes
+    semânticas, por Richard Richens, um ramo da IA forte - uma das bases da
+    representação de orientação a objetos. Na década de 1960, a linguagem de
+    programação Lisp era bastante usada no ramo da inteligência artificial, um
+    dos recursos que a linguagem oferecia era o uso de itens (ou átomos), que
+    são estruturas que continham atributos e eram imutáveis, podendo associar
+    entre si. Nesta mesma época surgia a linguagem de programação SIMULA 67,
+    criada por Ole-Johan Dahl e Kristen Nygaard, que foi a primeira linguagem
+    de programação orientada a objetos e base para o popular Smalltalk e as
+    linguagens de programação modernas orientadas a objetos. Em 1975, Marvin
+    Minsky mencionou que a principal base para o conceito de Frames, que ele
+    mesmo propôs, foi a orientação a objetos.
+
+\section*{Questão 2A}
+    O tipo de conhecimento representado com os sistemas de produção e sistemas
+    especialistas é um tipo de conhecimento bem especifico a respeito de uma
+    determinada área qualquer especificada geralmente (mas não necessariamente,
+    no caso dos sistemas especialistas) pelas regras - chamadas normalmente de
+    produções - que o sistema possui para realizar seu processamento. 
+    
+    Tais regras são a principio informadas ao sistema por especialistas de
+    domínio em ambos os casos, e constituem-se de condições "\texttt{SE ...
+    ENTÃO ...}" que permitem à máquina estabelecer relações claras entre as
+    diferentes regras para formar novos conhecimentos. Nos casos em que ambas
+    os sistemas são baseados em regras, há diferenças nos métodos de inferência
+    usados para formar novos fatos, pois no caso dos sistemas de produção é
+    usado "encadeamento para frente" e nos sistemas especialistas podem ser
+    usados tanto "encadeamento para frente" quanto "encadeamento para trás".
+    
+    O que fica bem estabelecido, mesmo, a respeito de ambos os sistemas, é que
+    em ambos o conhecimento inicial é diretamente inserido por especialistas -
+    numa fase normalmente chamada de aquisição de conhecimentos - e que o
+    sistema é capaz de trabalhar, dado esse conhecimento inicial, apenas em
+    cima dele, sem se estender para outras áreas ou conhecimentos de propósito
+    mais geral, por exemplo.
+
+\section*{Questão 2B}
+    Sistemas Especialistas e Sistemas de Produção não são, segundo nossas
+    pesquisas, mais tão usados quanto eram na década de 90. Ainda assim, esses
+    sistemas ainda são mencionados periodicamente em livros e conferências na
+    área de inteligência artificial, sem citar aplicações ou implementações
+    significativas relacionadas a esses sistemas.
+    
+    Das aplicações que encontramos que mencionam esses sistemas, muitas afirmam
+    não usá-los por se tratar de problemas no qual sistemas especialistas e
+    sistemas de produção necessitariam de uma grande quantidade de regras para
+    funcionar da forma esperada. 
+    
+    O único documento que encontramos que falam de um uso recente de sistemas
+    especialistas trata da implementação de \textit{human mental workload} (ou
+    carga de trabalho mental humana, em tradução livre) usando sistemas
+    especialistas como uma forma mais estruturada de implementar tal carga de
+    trabalho. Já na maioria dos casos, como no caso de predição de
+    \textit{phishing} usando inteligência artificial, foi observado que não foi
+    usado sistemas especialistas devido ao fato de que tais sistemas
+    necessitariam de grande quantidade de regras para realizar o trabalho, daí
+    justificando o uso de outros mecanismos de representação de reconhecimento
+    para realizar a tarefa.
+    
+    A respeito de sistemas de produção, encontrou-se grande dificuldade em
+    encontrar documentos relacionados a área devido a confusão gerada pelo nome
+    do sistema, que em muitos documentos aparece sob o contexto de "colocar um
+    sistema em produção" - mesmo quando buscando por tópicos relacionados a
+    inteligência artificial - o que claramente não corresponde ao que queríamos
+    encontrar durante a pesquisa.
+
+\section*{Questão 3}
+    No ramo de inteligência artificial fraca, ramo mais voltado a como a
+    máquina pode simular comportamentos humanos, há ferramentas que ligam a
+    representação do conhecimento à IA fraca. Por exemplo, redes semânticas
+    surgiram como uma forma da máquina reconhecer a linguagem natural humana,
+    que é uma aplicação específica, através de modelo de grafos e hoje é usada,
+    dentre as várias aplicações, para reconhecimento de plágio. Neste caso o
+    conhecimento é moldado numa rede de elementos-chaves que são
+    interconectados através de referências entre cada elemento-chave - isto
+    também é uma forma de reconhecimento de ideias, visto que normalmente
+    associamos os assuntos que estamos aprendendo a algo familiar que já temos
+    conhecimento. Outra ferramenta específica que moldou a representação de
+    conhecimento foi o Logic Theorist, em 1955, conseguiu provar diversos
+    teoremas matemáticos (já provados) apenas usando a lógica, conseguindo até
+    achar provas alternativas aos já conhecidos; lógica é um conceito que
+    usamos para para embasamento de ideias.
+
+\section*{Referências}
+    \subsection*{Questão 1}
+    \begin{itemize}
+        %% \href{[url]}{[texto]}
+        \item
+            \href{https://books.google.com.br/books?id=OKn2v__x-OwC&lpg=PP1&dq=Operations%20Research%20and%20Artificial%20Intelligence&hl=pt-BR&pg=PP1#v=onepage&q=Operations%20Research%20and%20Artificial%20Intelligence&f=false}{C.
+            W. Holsapple, Varghese S. Jacob, Andrew B. Whinston;
+            \textit{Operations Research and Artificial Intelligence}, Ablex
+            Publising Corporation, 1994 (p. 59-60)}
+        \item \href{https://en.wikipedia.org/wiki/Object-oriented_programming}{Object Oriented Programming - Wikipedia, the free encyclopedia}
+        \item \href{https://en.wikipedia.org/wiki/Simula}{Simula - Wikipedia, the free encyclopedia}
+        \item \href{https://en.wikipedia.org/wiki/Sketchpad}{Sketchpad - Wikipedia, the free encyclopedia}
+        \item \href{http://web.stanford.edu/class/cs227/Lectures/lec02.pdf}{2. Object Oriented Representaion - CS227, Spring 2011 - Stanford University (slide 7)}
+    \end{itemize}
+    
+    \subsection*{Questão 2}
+    \subsubsection*{Questão A}
+    \begin{itemize}
+        \item \href{http://www.j-paine.org/students/tutorials/ps/node1.html}{Introduction --- the birth of expert systems and production systems}
+        \item \href{https://en.wikipedia.org/wiki/Production_system_(computer_science)}{Production system (computer science) - Wikipedia, the free encyclopedia}
+        \item \href{https://en.wikipedia.org/wiki/Expert_system}{Expert system - Wikipedia, the free encyclopedia}
+    \end{itemize}
+    
+    \subsubsection*{Questão B}
+    \begin{itemize}
+        \item \href{https://books.google.com.br/books?id=GS7RDAAAQBAJ&lpg=PA80&dq=artificial%20intelligence%20expert%20system%202016&hl=pt-BR&pg=PA80#v=onepage&q=artificial%20intelligence%20expert%20system%202016&f=false}{Combining RDR-Based Machine Learning Approach and Human Expert Knowledge for Phishing Detection}
+        \item \href{https://books.google.com.br/books?id=jYb2DAAAQBAJ&lpg=PA215&dq=artificial%20intelligence%20expert%20system%202016&hl=pt-BR&pg=PA215#v=onepage&q=artificial%20intelligence%20expert%20system%202016&f=false}{Modeling Mental Worload via Rule-Based Expert System: A Comparison with NASA-TLX and Workload Profile}
+        
+    \end{itemize}
+\end{document}
