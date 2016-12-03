@@ -36,28 +36,28 @@
     \section*{O sistema}
         O sistema utilizado consiste em fazer um caminhão estacionar na vaga
         especificada, em marcha ré, usando uma série de regras \textit{fuzzy}.
-        As variáveis que devem ser consideradas são: a posição $x$ e $y$ do
-        caminhão; a direção no qual ele está e o ângulo em que o volante está
-        virado.
+        As variáveis que devem ser consideradas são: a posição $x$ ($y$ é
+        considerado como o topo) do caminhão; a direção no qual ele está e o
+        ângulo em que o volante está virado.
         
     \subsection*{Variáveis do sistema}
-        As variáveis entrada do sistema são valores $x$ e $y$, apontando a
-        posição inicial do caminhão, e a direção, que consiste onde a frente do
-        caminhão está apontado (este dado é obtido a partir da conversão do
-        angulo atual no qual o caminhão se encontra). A partir desses dados, um
-        ângulo é gerado como saída, mostrando qual o angulo do volante do
-        caminhão deve ser modificado antes de executar o próximo movimento a
-        ré, num intervalo que vai de -30$^\circ$ até 30$^\circ$. Outro ponto a
-        notar é a delimitação das variáveis: os eixos $x$ e $y$ estão limitados
-        ao intervalo $(0, 1)$; as direções envolvem cima, baixo, esquerda e
-        direita e são definidas a partir de seus valores respectivos em uma
-        escala de 0$^\circ$ a 360$^\circ$; Já o ângulo é delimitado de
-        -30$^\circ$ até 30$^\circ$, embora seja enviado para o servidor como um
-        intervalo que vai de -1 a 1. Como esses intervalos fazem parte do
-        funcionamento do sistema, vamos especificar e listar as condições que
-        classificam um determinado valor fornecido pelo servidor dado em um
-        termo que pode ser usado numa regra de forma mais simples. Segue a
-        lista:
+        As variáveis entrada do sistema são valores $x$, apontando a posição
+        inicial do caminhão ($y$ é sempre considerado o topo), e a direção, que
+        consiste onde a frente do caminhão está apontado (este dado é obtido a
+        partir da conversão do angulo atual no qual o caminhão se encontra). A
+        partir desses dados, um ângulo é gerado como saída, mostrando qual o
+        angulo do volante do caminhão deve ser modificado antes de executar o
+        próximo movimento a ré, num intervalo que vai de -30$^\circ$ até
+        30$^\circ$. Outro ponto a notar é a delimitação das variáveis: o eixos
+        $x$ está limitado ao intervalo $(0, 1)$; as direções envolvem cima,
+        baixo, esquerda e direita e são definidas a partir de seus valores
+        respectivos em uma escala de 0$^\circ$ a 360$^\circ$; Já o ângulo é
+        delimitado de -30$^\circ$ até 30$^\circ$, embora seja enviado para o
+        servidor como um intervalo que vai de -1 a 1. Como esses intervalos
+        fazem parte do funcionamento do sistema, vamos especificar e listar as
+        condições que classificam um determinado valor fornecido pelo servidor
+        dado em um termo que pode ser usado numa regra de forma mais simples.
+        Segue a lista:
         \begin{itemize}
             \item \textbf{X}
                 \begin{itemize}
@@ -66,12 +66,6 @@
                     \item \texttt{\textbf{half}} - Intervalo entre 0.4 e 0.6;
                     \item \texttt{\textbf{right}} - Intervalo entre 0.5 e 0.9;
                     \item \texttt{\textbf{tooRight}} - Intervalo entre 0.7 e 1.
-                \end{itemize}
-            
-            \item Y 
-                \begin{itemize}
-                    \item \texttt{\textbf{up}} - Intervalo entre 0 e 0.8;
-                    \item \texttt{\textbf{bottom}} - Intervalo entre 0.5 e 1.
                 \end{itemize}
 
             \item Direção (\texttt{direction}, no código)
@@ -88,6 +82,7 @@
         retorno para cada regra e que respeita intervalos similares ao do termo
         X:
         
+        \newpage
         \begin{itemize}
             \item Ângulo (\texttt{angle}, no código)
             \begin{itemize}
@@ -103,25 +98,25 @@
         A partir das definições especificadas na seção anterior, uma série de
         40 regras são definidas para determinar qual caminho o caminhão deve
         percorrer. Todas as regras são condicionais (\texttt{IF, THEN}), sendo
-        que dados os $x$, $y$ e a direção, então o ângulo do volante deve ser
-        uma das cinco posições especificadas na listagem anterior e são
-        aplicados cálculos de lógica \textit{fuzzy} para encontrar o valor que
-        será retornado. Alguns exemplos dessas regras são encontrados abaixo:
+        que dados os $x$ e a direção, então o ângulo do volante deve ser uma
+        das cinco posições especificadas na listagem anterior e são aplicados
+        cálculos de lógica \textit{fuzzy} para encontrar o valor que será
+        retornado. Alguns exemplos dessas regras são encontrados abaixo:
         
         \begin{center}
             \begin{tabular}{c c c c c}
                 \hline
-                 x & y & direction & angle \\
-                 tooLeft & up & left & tooLeft \\
-                 tooLeft & up & right & tooRight \\
-                 ... & ... & ... & ... \\
-                 tooRight & bottom & down & tooRight \\
+                 x & direction & angle \\
+                 tooLeft & left & tooLeft \\
+                 tooLeft & right & tooRight \\
+                 ... & ... & ... \\
+                 tooRight & down & tooRight \\
                  
                 \hline
             \end{tabular}
         \end{center}
         
-        Note que os exemplos acima são apenas uma pequena amostra das 40 regras
+        Note que os exemplos acima são apenas uma pequena amostra das 20 regras
         definidas, que não serão todas apresentadas aqui devido à sua extensão.
         Todas as regras podem ser vistas no arquivo \texttt{remoteDriver.fcl}.
 
@@ -137,7 +132,7 @@
         caminhão irá fazer.
         
     \subsection*{Problemas encontrados}
-        Dependendo dos parâmetros $x$, $y$ e do ângulo com o qual o programa é
+        Dependendo dos parâmetros $x$ e do ângulo com o qual o programa é
         iniciado, é possível encontrar pontos em que o programa simplesmente
         não consegue responder com as direções para que o caminhão estacione
         corretamente. Em alguns pontos, o caminhão consegue estacionar, outras
