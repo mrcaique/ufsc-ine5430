@@ -153,10 +153,10 @@ class State(BaseState):
             sequences_found = []
             while True:
                 sequences = sequences.get_largest_sequences(n, jump)
+                sequences = sequences.get_by_not_blocked(self)
                 if jump is not None and not len(sequences):
                     # There is nothing to paginate..stop here
                     break
-                sequences = sequences.get_by_not_blocked(self)
                 if len(sequences):
                     sequences_found.extend(sequences)
                     if len(sequences_found) > 10:
